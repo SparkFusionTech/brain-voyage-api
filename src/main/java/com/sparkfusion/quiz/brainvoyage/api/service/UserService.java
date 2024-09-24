@@ -12,10 +12,13 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtUtils;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
+import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -29,18 +32,45 @@ public class UserService {
     private final PasswordEncryptor passwordEncryptor;
     private final JwtUtils jwtUtils;
 
+    private final ImageWorker imageWorker;
+
     public UserService(
             UserRepository userRepository,
             GetUserFactory getUserFactory,
             AddUserFactory addUserFactory,
             PasswordEncryptor passwordEncryptor,
-            JwtUtils jwtUtils
+            JwtUtils jwtUtils,
+            ImageWorker imageWorker
     ) {
         this.userRepository = userRepository;
         this.getUserFactory = getUserFactory;
         this.addUserFactory = addUserFactory;
         this.passwordEncryptor = passwordEncryptor;
         this.jwtUtils = jwtUtils;
+        this.imageWorker = imageWorker;
+    }
+
+    @Transactional
+    public AddUserDto registerUser(String email, String password, MultipartFile accountIcon) {
+        try {
+            Optional<UserEntity> existingUser = userRepository.findByEmail(email);
+            if (existingUser.isPresent()) throw new UserAlreadyExistsException("User with email " + email + " already exists");
+            if (accountIcon == null) throw new UnexpectedException("TEMP");
+            if (!Objects.requireNonNull(accountIcon.getContentType()).startsWith("image/")) {
+                throw new UnexpectedException("Uploaded file is not a valid image. Please upload a valid image file.");
+            }
+
+            String iconUrl = imageWorker.saveImage(accountIcon);
+
+            UserEntity userEntity = addUserFactory.mapToEntity(new AddUserDto(email, password), iconUrl, passwordEncryptor);
+            UserEntity savedUser = userRepository.save(userEntity);
+
+            return addUserFactory.mapToDto(savedUser);
+        } catch (UserAlreadyExistsException | UnexpectedException exception) {
+            throw exception;
+        } catch (Exception e) {
+            throw new UnexpectedException("Error registering user with email " + email + "!");
+        }
     }
 
     @Transactional(readOnly = true)
@@ -77,7 +107,7 @@ public class UserService {
     public Boolean isEmailFree(String email) {
         try {
             Optional<UserEntity> existingUser = userRepository.findByEmail(email);
-            return existingUser.isPresent();
+            return existingUser.isEmpty();
         } catch (Exception exception) {
             throw new UnexpectedException("Error checking user existing with email " + email + "!");
         }
@@ -89,17 +119,5 @@ public class UserService {
         return users.stream()
                 .map(getUserFactory::mapToDto)
                 .toList();
-    }
-
-    @Transactional
-    public AddUserDto addUser(AddUserDto addUserDto) {
-        Optional<UserEntity> existingUser = userRepository.findByEmail(addUserDto.getEmail());
-        if (existingUser.isPresent()) {
-            throw new UserAlreadyExistsException("User with email " + addUserDto.getEmail() + " already exists");
-        }
-
-        UserEntity userEntity = addUserFactory.mapToEntity(addUserDto, passwordEncryptor);
-        UserEntity savedUser = userRepository.save(userEntity);
-        return addUserFactory.mapToDto(savedUser);
     }
 }

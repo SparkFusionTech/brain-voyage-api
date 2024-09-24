@@ -2,7 +2,6 @@ package com.sparkfusion.quiz.brainvoyage.api.controller;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
-import com.sparkfusion.quiz.brainvoyage.api.exception.UserAlreadyExistsException;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,6 +15,7 @@ import jakarta.validation.constraints.Email;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -126,37 +126,18 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @Operation(
-            summary = "Create a new user",
-            description = "Create a new user with the provided details"
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(
-                            responseCode = "201",
-                            description = "User successfully created",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = AddUserDto.class)
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "400",
-                            description = "Invalid input provided"
-                    ),
-                    @ApiResponse(
-                            responseCode = "409",
-                            description = "User with the given email already exists"
-                    )
-            }
-    )
     @PostMapping("/create")
     public ResponseEntity<AddUserDto> createUser(
-            @Valid
-            @RequestBody
-            AddUserDto addUserDTO
+            @RequestParam("email")
+            String email,
+
+            @RequestParam("password")
+            String password,
+
+            @RequestPart("accountIcon")
+            MultipartFile accountIcon
     ) {
-        AddUserDto savedUser = userService.addUser(addUserDTO);
+        AddUserDto savedUser = userService.registerUser(email, password, accountIcon);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 }

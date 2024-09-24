@@ -24,6 +24,9 @@ public final class UserEntity implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "icon_url")
+    private String iconUrl;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
@@ -36,6 +39,14 @@ public final class UserEntity implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public Long getId() {

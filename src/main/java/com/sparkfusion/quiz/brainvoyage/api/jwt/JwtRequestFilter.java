@@ -1,6 +1,7 @@
 package com.sparkfusion.quiz.brainvoyage.api.jwt;
 
 import com.sparkfusion.quiz.brainvoyage.api.service.UserService;
+import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             @NotNull HttpServletResponse response,
             @NotNull FilterChain chain
     ) throws IOException, ServletException {
-        if (isSwaggerPath(request)) {
+        if (isSwaggerPath(request) || isStoragePath(request)) {
             chain.doFilter(request, response);
             return;
         }
@@ -61,6 +62,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private boolean isSwaggerPath(HttpServletRequest request) {
         String path = request.getRequestURI();
         return path.startsWith("/swagger-ui") || path.startsWith("/v3/api-docs") || path.startsWith("/swagger-resources");
+    }
+
+    private boolean isStoragePath(HttpServletRequest request) {
+        return request.getRequestURI().startsWith(ImageUtils.UPLOAD_DIRECTORY);
     }
 
     private String extractJwtFromRequest(HttpServletRequest request) {

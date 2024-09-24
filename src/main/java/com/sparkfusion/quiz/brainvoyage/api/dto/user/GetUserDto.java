@@ -10,13 +10,24 @@ public final class GetUserDto {
 
     private String password;
 
+    private String iconUrl;
+
     private LocalDateTime createdAt;
 
-    public GetUserDto(Long id, String email, String password, LocalDateTime createdAt) {
+    public GetUserDto(Long id, String email, String password, String iconUrl, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.iconUrl = iconUrl;
         this.createdAt = createdAt;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
     }
 
     public Long getId() {
