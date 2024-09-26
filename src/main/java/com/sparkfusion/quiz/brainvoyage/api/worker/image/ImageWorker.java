@@ -19,6 +19,10 @@ public final class ImageWorker {
         this.serverUrl = serverUrl;
     }
 
+    public String getEmptyAccountIconUrl() {
+        return serverUrl + ImageUtils.IMAGES_DIRECTORY + "/" + ImageUtils.EMPTY_ACCOUNT_ICON_NAME;
+    }
+
     public String saveImage(MultipartFile image) throws IOException {
         File uploadDirFile = new File(ImageUtils.IMAGES_DIRECTORY);
         if (!uploadDirFile.exists()) {

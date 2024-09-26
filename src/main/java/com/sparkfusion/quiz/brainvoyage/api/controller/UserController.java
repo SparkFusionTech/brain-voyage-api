@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import org.springframework.http.HttpStatus;
@@ -128,12 +129,13 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<AddUserDto> createUser(
-            @RequestParam("email")
+            @RequestPart("email")
             String email,
 
-            @RequestParam("password")
+            @RequestPart("password")
             String password,
 
+            @Nullable
             @RequestPart("accountIcon")
             MultipartFile accountIcon
     ) {
