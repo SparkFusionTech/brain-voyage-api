@@ -10,6 +10,10 @@ group = "com.sparkfusion.quiz.brainvoyage.api"
 version = "1.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+tasks.test {
+    useJUnitPlatform()
+}
+
 repositories {
     mavenCentral()
 }
@@ -32,15 +36,14 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-devtools")
 
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     runtimeOnly("com.h2database:h2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.mockk:mockk:1.4.1")
 
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
-}
 
-tasks.test {
-    useJUnitPlatform()
 }

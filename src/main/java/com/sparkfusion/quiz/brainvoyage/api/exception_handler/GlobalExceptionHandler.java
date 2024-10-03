@@ -1,5 +1,7 @@
 package com.sparkfusion.quiz.brainvoyage.api.exception_handler;
 
+import com.sparkfusion.quiz.brainvoyage.api.exception.BadConnectionException;
+import com.sparkfusion.quiz.brainvoyage.api.exception.UnableExecuteRequestException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,6 +21,20 @@ import java.util.Map;
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
 
+    @ExceptionHandler(UnableExecuteRequestException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleUnableExecuteRequestException(UnableExecuteRequestException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.NOT_FOUND.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(BadConnectionException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleBadConnectionException(BadConnectionException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.SERVICE_UNAVAILABLE);
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseBody
     public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
@@ -35,8 +51,9 @@ public final class GlobalExceptionHandler {
 
     @ExceptionHandler(UnexpectedException.class)
     @ResponseBody
-    public ResponseEntity<String> handleUnexpectedException(UnexpectedException unexpectedException) {
-        return new ResponseEntity<>(unexpectedException.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(UnexpectedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Operation(
