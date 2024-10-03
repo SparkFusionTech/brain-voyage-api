@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.controller;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
+import com.sparkfusion.quiz.brainvoyage.api.dto.user.UserExistsDto;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -66,8 +69,10 @@ public class UserController {
 
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/check-token")
-    public ResponseEntity<String> checkToken(@RequestHeader("Authorization") String authorizationHeader) {
-        return new ResponseEntity<>("Token is valid", HttpStatus.OK);
+    public ResponseEntity<Map<String, String>> checkToken(@RequestHeader("Authorization") String authorizationHeader) {
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Token is valid");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Operation(
@@ -91,14 +96,14 @@ public class UserController {
             }
     )
     @GetMapping("/exists")
-    public ResponseEntity<Boolean> checkUserExisting(
+    public ResponseEntity<UserExistsDto> checkUserExisting(
             @Valid
             @Email
             @RequestParam("email")
             String email
     ) {
-        Boolean exists = userService.isEmailFree(email);
-        return new ResponseEntity<>(exists, HttpStatus.OK);
+        UserExistsDto userExistsDto = userService.isUserExists(email);
+        return new ResponseEntity<>(userExistsDto, HttpStatus.OK);
     }
 
     @Operation(

@@ -1,9 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.service;
 
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserFactory;
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserFactory;
+import com.sparkfusion.quiz.brainvoyage.api.dto.user.*;
 import com.sparkfusion.quiz.brainvoyage.api.encryptor.PasswordEncryptor;
 import com.sparkfusion.quiz.brainvoyage.api.entity.UserEntity;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
@@ -107,10 +104,10 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public Boolean isEmailFree(String email) {
+    public UserExistsDto isUserExists(String email) {
         try {
             Optional<UserEntity> existingUser = userRepository.findByEmail(email);
-            return existingUser.isEmpty();
+            return new UserExistsDto(existingUser.isPresent());
         } catch (Exception exception) {
             throw new UnexpectedException("Error checking user existing with email " + email + "!");
         }
