@@ -43,6 +43,20 @@ public class ImageSearchControllerTest {
     }
 
     @Test
+    public void testSearchImagesMissingAuthorizationHeader() throws Exception {
+        mockMvc.perform(get("/images/search")
+                        .param("query", "test"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testSearchImagesMissingQueryParam() throws Exception {
+        mockMvc.perform(get("/images/search")
+                        .header("Authorization", "Bearer dummy_token"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void testSearchImagesSuccess() throws Exception {
         List<PixabayImageDto> mockResponse = List.of(
                 new PixabayImageDto(
@@ -69,7 +83,9 @@ public class ImageSearchControllerTest {
 
         when(imageSearchService.searchImages("test")).thenReturn(mockResponse);
 
-        mockMvc.perform(get("/images/search").param("query", "test"))
+        mockMvc.perform(get("/images/search")
+                        .header("Authorization", "Bearer dummy_token")
+                        .param("query", "test"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].webformatURL").value("https://example.com/image1.jpg"))
                 .andExpect(jsonPath("$[0].webformatWidth").value(640))
@@ -91,16 +107,14 @@ public class ImageSearchControllerTest {
         verify(imageSearchService, times(1)).searchImages("test");
     }
 
-
     @Test
     public void testSearchImagesNoResults() throws Exception {
         when(imageSearchService.searchImages("test")).thenReturn(Collections.emptyList());
 
-        mockMvc.perform(
-                        get("/images/search")
-                                .param("query", "test")
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+        mockMvc.perform(get("/images/search")
+                        .header("Authorization", "Bearer dummy_token")
+                        .param("query", "test")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$").isEmpty());
