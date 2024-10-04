@@ -26,8 +26,12 @@ public class PixabayRepository {
         this.restTemplate = restTemplate;
     }
 
-    public PixabayResponse searchImages(String query) {
-        String url = pixabayUrl + "?key=" + pixabayKey + "&q=" + query + "&image_type=photo";
+    public PixabayResponse searchImages(String query, int page, int perPage) {
+        String url = pixabayUrl + "?key=" + pixabayKey
+                + "&q=" + query
+                + "&image_type=photo"
+                + "&page=" + page
+                + "&per_page=" + perPage;
         return restTemplate.getForObject(url, PixabayResponse.class);
     }
 }

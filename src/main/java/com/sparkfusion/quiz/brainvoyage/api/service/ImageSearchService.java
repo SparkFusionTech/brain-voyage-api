@@ -6,6 +6,7 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.BadConnectionException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnableExecuteRequestException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.PixabayRepository;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
@@ -23,13 +24,16 @@ public class ImageSearchService {
         this.repository = repository;
     }
 
-    public List<PixabayImageDto> searchImages(String query) {
+    public List<PixabayImageDto> searchImages(String query, int page, int perPage) {
         try {
-            PixabayResponse response = repository.searchImages(query);
+            PixabayResponse response = repository.searchImages(query, page, perPage);
             if (response != null && response.getHits() != null) {
                 return response.getHits();
             }
         } catch (HttpClientErrorException exception) {
+            if (exception.getStatusCode() == HttpStatus.BAD_REQUEST) {
+                return Collections.emptyList();
+            }
             throw new UnableExecuteRequestException();
         } catch (HttpServerErrorException exception) {
             throw new UnexpectedException();

@@ -14,6 +14,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -134,9 +136,15 @@ public class UserController {
 
     @PostMapping("/create")
     public ResponseEntity<AddUserDto> createUser(
+            @Valid
+            @NotBlank(message = "Email must not be blank")
+            @Email(message = "Email should be valid")
             @RequestPart("email")
             String email,
 
+            @Valid
+            @NotBlank(message = "Password must not be blank")
+            @Size(min = 8, message = "Password must be at least 8 characters long")
             @RequestPart("password")
             String password,
 
