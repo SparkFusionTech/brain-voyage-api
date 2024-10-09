@@ -27,9 +27,16 @@ public final class UserEntity implements UserDetails {
     @Column(name = "icon_url")
     private String iconUrl;
 
+    @Column(name = "name", nullable = false, unique = true)
+    private String name;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false, nullable = false)
     private LocalDateTime createdAt;
+
+    public static String generateUserName() {
+        return "user" + System.currentTimeMillis() / 100;
+    }
 
     @Override
     public String getUsername() {
@@ -47,6 +54,22 @@ public final class UserEntity implements UserDetails {
 
     public void setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public Long getId() {

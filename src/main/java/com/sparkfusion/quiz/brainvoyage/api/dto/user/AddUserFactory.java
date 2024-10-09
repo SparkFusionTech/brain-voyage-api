@@ -11,11 +11,17 @@ public final class AddUserFactory {
         return new AddUserDto(user.getEmail(), user.getPassword());
     }
 
-    public UserEntity mapToEntity(AddUserDto addUserDto, String iconUrl, PasswordEncryptor passwordEncryptor) {
+    public UserEntity mapToEntity(
+            AddUserDto addUserDto,
+            String iconUrl,
+            String name,
+            PasswordEncryptor passwordEncryptor
+    ) {
         UserEntity user = new UserEntity();
         user.setEmail(addUserDto.getEmail());
         user.setPassword(passwordEncryptor.encrypt(addUserDto.getPassword()));
         user.setIconUrl(iconUrl);
+        user.setName(name);
         return user;
     }
 }

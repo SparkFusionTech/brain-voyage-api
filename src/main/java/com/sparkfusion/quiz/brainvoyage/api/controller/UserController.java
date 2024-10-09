@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.controller;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
+import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserInfoDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.UserExistsDto;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.service.UserService;
@@ -18,6 +19,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -67,6 +69,14 @@ public class UserController {
     ) {
         JwtResponse token = userService.loginAndGenerateToken(getUserDto);
         return new ResponseEntity<>(token, HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/info")
+    public ResponseEntity<GetUserInfoDto> readUserInfo(@RequestHeader("Authorization") String authorization) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        GetUserInfoDto userInfoDto = userService.readUserInfo(email);
+        return ResponseEntity.ok(userInfoDto);
     }
 
     @SecurityRequirement(name = "Bearer Authentication")

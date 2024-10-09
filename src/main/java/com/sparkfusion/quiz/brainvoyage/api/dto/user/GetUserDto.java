@@ -12,14 +12,25 @@ public final class GetUserDto {
 
     private String iconUrl;
 
+    private String name;
+
     private LocalDateTime createdAt;
 
-    public GetUserDto(Long id, String email, String password, String iconUrl, LocalDateTime createdAt) {
+    public GetUserDto(Long id, String email, String password, String iconUrl, String name, LocalDateTime createdAt) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.iconUrl = iconUrl;
+        this.name = name;
         this.createdAt = createdAt;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getIconUrl() {

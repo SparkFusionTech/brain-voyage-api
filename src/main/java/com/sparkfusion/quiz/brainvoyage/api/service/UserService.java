@@ -25,6 +25,7 @@ public class UserService {
 
     private final GetUserFactory getUserFactory;
     private final AddUserFactory addUserFactory;
+    private final GetUserInfoFactory getUserInfoFactory;
 
     private final PasswordEncryptor passwordEncryptor;
     private final JwtUtils jwtUtils;
@@ -35,6 +36,7 @@ public class UserService {
             UserRepository userRepository,
             GetUserFactory getUserFactory,
             AddUserFactory addUserFactory,
+            GetUserInfoFactory getUserInfoFactory,
             PasswordEncryptor passwordEncryptor,
             JwtUtils jwtUtils,
             ImageWorker imageWorker
@@ -42,9 +44,24 @@ public class UserService {
         this.userRepository = userRepository;
         this.getUserFactory = getUserFactory;
         this.addUserFactory = addUserFactory;
+        this.getUserInfoFactory = getUserInfoFactory;
         this.passwordEncryptor = passwordEncryptor;
         this.jwtUtils = jwtUtils;
         this.imageWorker = imageWorker;
+    }
+
+    @Transactional(readOnly = true)
+    public GetUserInfoDto readUserInfo(String email) {
+        try {
+            Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+            if (userEntity.isEmpty()) {
+                throw new UserNotFoundException();
+            }
+
+            return getUserInfoFactory.mapToDto(userEntity.get());
+        } catch (Exception e) {
+            throw new UnexpectedException("Unknown error during user info reading");
+        }
     }
 
     @Transactional
@@ -62,7 +79,12 @@ public class UserService {
                 iconUrl = imageWorker.saveImage(accountIcon);
             }
 
-            UserEntity userEntity = addUserFactory.mapToEntity(new AddUserDto(email, password), iconUrl, passwordEncryptor);
+            UserEntity userEntity = addUserFactory.mapToEntity(
+                    new AddUserDto(email, password),
+                    iconUrl,
+                    UserEntity.generateUserName(),
+                    passwordEncryptor
+            );
             UserEntity savedUser = userRepository.save(userEntity);
 
             return addUserFactory.mapToDto(savedUser);

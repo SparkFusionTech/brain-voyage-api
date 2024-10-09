@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 public final class GetUserFactory {
 
     public GetUserDto mapToDto(UserEntity user) {
-        return new GetUserDto(user.getId(), user.getEmail(), user.getPassword(), user.getIconUrl(), user.getCreatedAt());
+        return new GetUserDto(user.getId(), user.getEmail(), user.getPassword(), user.getIconUrl(), user.getName(), user.getCreatedAt());
     }
 }
