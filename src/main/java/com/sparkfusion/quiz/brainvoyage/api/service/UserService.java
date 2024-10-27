@@ -78,7 +78,7 @@ public class UserService {
             } else if (!accountIcon.getContentType().startsWith("image/")) {
                 throw new NotImageException();
             } else {
-                iconUrl = imageWorker.saveImage(accountIcon);
+                iconUrl = imageWorker.saveImage(accountIcon, ImageWorker.ImageType.ACCOUNT);
             }
 
             UserEntity userEntity = addUserFactory.mapToEntity(
