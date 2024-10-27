@@ -68,7 +68,9 @@ public class UserService {
     public AddUserDto registerUser(String email, String password, MultipartFile accountIcon) {
         try {
             Optional<UserEntity> existingUser = userRepository.findByEmail(email);
-            if (existingUser.isPresent()) throw new UserAlreadyExistsException("User with email " + email + " already exists");
+            if (existingUser.isPresent()) {
+                throw new UserAlreadyExistsException("User with email " + email + " already exists");
+            }
 
             String iconUrl;
             if (accountIcon == null || accountIcon.getContentType() == null) {
