@@ -13,6 +13,7 @@ import com.sparkfusion.quiz.brainvoyage.api.repository.QuestionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,6 +35,18 @@ public class AnswerService {
         this.questionRepository = questionRepository;
         this.addAnswerFactory = addAnswerFactory;
         this.getAnswerFactory = getAnswerFactory;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetAnswerDto> readAnswerByQuestionId(Long questionId) {
+        try {
+            List<AnswerEntity> answers = answerRepository.readAnswersByQuestionId(questionId);
+            return answers.stream()
+                    .map(getAnswerFactory::mapToDto)
+                    .toList();
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional

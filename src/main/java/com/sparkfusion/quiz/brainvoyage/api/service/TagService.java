@@ -13,6 +13,7 @@ import com.sparkfusion.quiz.brainvoyage.api.repository.TagRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,6 +30,18 @@ public class TagService {
         this.quizRepository = quizRepository;
         this.addTagFactory = addTagFactory;
         this.getTagFactory = getTagFactory;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetTagDto> readTagsByQuizId(Long quizId) {
+        try {
+            List<TagEntity> tags = tagRepository.readTagByQuizId(quizId);
+            return tags.stream()
+                    .map(getTagFactory::mapToDto)
+                    .toList();
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional

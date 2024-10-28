@@ -10,6 +10,7 @@ public class GetQuestionFactory {
         return new GetQuestionDto(
                 question.getId(),
                 question.getName(),
+                question.getImageUrl(),
                 question.getCategory(),
                 question.getDifficulty(),
                 question.getExplanation(),

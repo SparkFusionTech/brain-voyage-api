@@ -7,14 +7,11 @@ public final class AddQuizDto {
     @NotBlank(message = "Title must not be blank")
     private String title;
 
-    @NotNull(message = "Catalog ,ust not be null")
-    private Integer catalogType;
+    @NotNull(message = "Catalog must not be null")
+    private Integer catalogId;
 
     @NotBlank(message = "Description must not be blank")
     private String description;
-
-    @NotNull(message = "Image must not be null")
-    private String imageUrl;
 
     @NotNull(message = "Questions count must not be empty")
     @Min(value = 1, message = "Questions count must be at least 1")
@@ -25,36 +22,20 @@ public final class AddQuizDto {
     @Email(message = "Email should be valid")
     private String userEmail;
 
-    public AddQuizDto(
-            String title,
-            Integer catalogType,
-            String description,
-            String imageUrl,
-            Integer questions,
-            String userEmail
-    ) {
+    public AddQuizDto(String title, Integer catalogId, String description, Integer questions, String userEmail) {
         this.title = title;
-        this.catalogType = catalogType;
+        this.catalogId = catalogId;
         this.description = description;
-        this.imageUrl = imageUrl;
         this.questions = questions;
         this.userEmail = userEmail;
     }
 
-    public @NotNull(message = "Catalog ,ust not be null") Integer getCatalogType() {
-        return catalogType;
+    public @NotNull(message = "Catalog must not be null") Integer getCatalogId() {
+        return catalogId;
     }
 
-    public void setCatalogType(@NotNull(message = "Catalog ,ust not be null") Integer catalogType) {
-        this.catalogType = catalogType;
-    }
-
-    public @NotNull(message = "Image must not be null") String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(@NotNull(message = "Image must not be null") String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setCatalogId(@NotNull(message = "Catalog must not be null") Integer catalogId) {
+        this.catalogId = catalogId;
     }
 
     public @NotBlank(message = "Title must not be blank") String getTitle() {

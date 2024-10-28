@@ -14,8 +14,11 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizCatalogRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
+import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,18 +33,22 @@ public class QuizService {
     private final GetQuizFactory getQuizFactory;
     private final AddQuizFactory addQuizFactory;
 
+    private final ImageWorker imageWorker;
+
     public QuizService(
             QuizRepository quizRepository,
             UserRepository userRepository,
             QuizCatalogRepository quizCatalogRepository,
             GetQuizFactory getQuizFactory,
-            AddQuizFactory addQuizFactory
+            AddQuizFactory addQuizFactory,
+            ImageWorker imageWorker
     ) {
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
         this.quizCatalogRepository = quizCatalogRepository;
         this.getQuizFactory = getQuizFactory;
         this.addQuizFactory = addQuizFactory;
+        this.imageWorker = imageWorker;
     }
 
     @Transactional
@@ -73,7 +80,7 @@ public class QuizService {
     }
 
     @Transactional
-    public GetQuizDto addQuiz(AddQuizDto addQuizDto) {
+    public GetQuizDto addQuiz(AddQuizDto addQuizDto, @NotNull MultipartFile image) {
         try {
             Optional<UserEntity> existingUser = userRepository.findByEmail(addQuizDto.getUserEmail());
             if (existingUser.isEmpty()) {
@@ -81,12 +88,14 @@ public class QuizService {
             }
 
             Optional<QuizCatalogEntity> existingCatalog = quizCatalogRepository.findById(
-                    Long.parseLong(addQuizDto.getCatalogType().toString()));
+                    Long.parseLong(addQuizDto.getCatalogId().toString()));
             if (existingCatalog.isEmpty()) {
                 throw new QuizCatalogNotFoundException();
             }
 
-            QuizEntity quiz = addQuizFactory.mapToEntity(addQuizDto, existingUser.get(), existingCatalog.get());
+            String imageUrl = imageWorker.saveImage(image, ImageWorker.ImageType.QUIZ);
+
+            QuizEntity quiz = addQuizFactory.mapToEntity(addQuizDto, existingUser.get(), existingCatalog.get(), imageUrl);
             QuizEntity savedQuiz = quizRepository.save(quiz);
             return getQuizFactory.mapToDto(savedQuiz);
         } catch (UserNotFoundException | QuizCatalogNotFoundException e) {

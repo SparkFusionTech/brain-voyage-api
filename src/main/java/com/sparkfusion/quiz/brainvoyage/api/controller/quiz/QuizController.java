@@ -8,10 +8,13 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -53,8 +56,11 @@ public class QuizController {
                     )
             }
     )
+    @SecurityRequirement(name = "Bearer Authentication")
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Boolean> deleteQuiz(@PathVariable("id") Long id) {
+    public ResponseEntity<Boolean> deleteQuiz(
+            @PathVariable("id") Long id
+    ) {
         Boolean deleted = quizService.deleteQuiz(id);
         return new ResponseEntity<>(deleted, HttpStatus.OK);
     }
@@ -79,6 +85,7 @@ public class QuizController {
                     )
             }
     )
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     public ResponseEntity<List<GetQuizDto>> readAllQuizByType(
             @RequestParam("type") Integer type
@@ -111,13 +118,19 @@ public class QuizController {
                     )
             }
     )
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/create")
     public ResponseEntity<GetQuizDto> createQuiz(
             @Valid
+            @NotNull
             @RequestBody
-            AddQuizDto addQuizDto
+            AddQuizDto addQuizDto,
+
+            @NotNull
+            @RequestPart("quizImage")
+            MultipartFile quizImage
     ) {
-        GetQuizDto getQuizDto = quizService.addQuiz(addQuizDto);
+        GetQuizDto getQuizDto = quizService.addQuiz(addQuizDto, quizImage);
         return new ResponseEntity<>(getQuizDto, HttpStatus.CREATED);
     }
 }

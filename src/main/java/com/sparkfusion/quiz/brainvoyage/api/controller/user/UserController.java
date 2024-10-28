@@ -171,7 +171,6 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(
             summary = "Create a new user",
             description = "Registers a new user with specified email and password, and optionally an account icon."

@@ -4,17 +4,18 @@ import com.sparkfusion.quiz.brainvoyage.api.dto.tag.AddTagDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.tag.GetTagDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/quizzes/tags")
@@ -24,6 +25,32 @@ public class TagController {
 
     public TagController(TagService tagService) {
         this.tagService = tagService;
+    }
+
+    @Operation(
+            summary = "Get tags by quiz ID",
+            description = "Returns a list of tags associated with a specific quiz."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Tags successfully retrieved.",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = GetTagDto.class))
+                            )
+                    ),
+                    @ApiResponse(responseCode = "500", description = "An error occurred on the server.")
+            }
+    )
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping
+    public ResponseEntity<List<GetTagDto>> readTagsByQuizId(
+            @RequestParam("quizId") Long quizId
+    ) {
+        List<GetTagDto> tags = tagService.readTagsByQuizId(quizId);
+        return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @Operation(
@@ -44,6 +71,7 @@ public class TagController {
                     @ApiResponse(responseCode = "500", description = "An error occurred on the server")
             }
     )
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/create")
     public ResponseEntity<GetTagDto> createTag(
             @Valid

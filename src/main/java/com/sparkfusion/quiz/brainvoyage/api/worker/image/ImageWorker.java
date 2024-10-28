@@ -40,7 +40,9 @@ public final class ImageWorker {
 
     public enum ImageType {
 
-        ACCOUNT("accounts");
+        ACCOUNT("accounts"),
+        QUIZ("quizzes"),
+        QUESTION("questions");
 
         private final String directoryName;
 

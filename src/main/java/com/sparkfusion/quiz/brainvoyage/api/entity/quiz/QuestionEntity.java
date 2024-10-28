@@ -15,6 +15,9 @@ public class QuestionEntity {
     @Column(name = "name", nullable = false, length = 32)
     private String name;
 
+    @Column(name = "image_url", nullable = false)
+    private String imageUrl;
+
     @Column(name = "category", nullable = false)
     private Integer category;
 
@@ -27,6 +30,14 @@ public class QuestionEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "quiz_id", nullable = false, foreignKey = @ForeignKey(name = "fk_question_quiz"))
     private QuizEntity quiz;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public Long getId() {
         return id;

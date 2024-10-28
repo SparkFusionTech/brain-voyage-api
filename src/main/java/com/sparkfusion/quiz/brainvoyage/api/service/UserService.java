@@ -93,6 +93,7 @@ public class UserService {
         } catch (UserAlreadyExistsException | NotImageException | UnexpectedException exception) {
             throw exception;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new UnexpectedException("Error registering user with email " + email + "!");
         }
     }

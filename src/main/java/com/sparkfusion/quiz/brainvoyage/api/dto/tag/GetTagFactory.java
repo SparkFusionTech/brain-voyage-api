@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class GetTagFactory {
 
     public GetTagDto mapToDto(TagEntity tag) {
-        return new GetTagDto(tag.getName(), tag.getQuiz());
+        return new GetTagDto(tag.getId(), tag.getName(), tag.getQuiz());
     }
 
     public TagEntity mapToEntity(GetTagDto getTagDto) {

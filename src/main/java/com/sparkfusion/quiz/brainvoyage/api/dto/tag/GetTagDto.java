@@ -4,12 +4,22 @@ import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizEntity;
 
 public class GetTagDto {
 
+    private Long id;
     private String name;
     private QuizEntity quiz;
 
-    public GetTagDto(String name, QuizEntity quiz) {
+    public GetTagDto(Long id, String name, QuizEntity quiz) {
+        this.id = id;
         this.name = name;
         this.quiz = quiz;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {

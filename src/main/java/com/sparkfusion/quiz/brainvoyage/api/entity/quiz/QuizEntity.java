@@ -24,7 +24,7 @@ public final class QuizEntity {
     private String description;
 
     @Column(name = "type", nullable = false)
-    private Integer type;
+    private Integer type = 0;
 
     @Column(name = "questions", nullable = false)
     private Integer questions;

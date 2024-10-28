@@ -8,13 +8,18 @@ import org.springframework.stereotype.Component;
 @Component
 public final class AddQuizFactory {
 
-    public QuizEntity mapToEntity(AddQuizDto addQuizDto, UserEntity user, QuizCatalogEntity catalog) {
+    public QuizEntity mapToEntity(
+            AddQuizDto addQuizDto,
+            UserEntity user,
+            QuizCatalogEntity catalog,
+            String imageUrl
+    ) {
         QuizEntity quiz = new QuizEntity();
         quiz.setTitle(addQuizDto.getTitle());
         quiz.setDescription(addQuizDto.getDescription());
         quiz.setQuestions(addQuizDto.getQuestions());
         quiz.setCatalog(catalog);
-        quiz.setImageUrl(addQuizDto.getImageUrl());
+        quiz.setImageUrl(imageUrl);
         quiz.setUser(user);
         return quiz;
     }

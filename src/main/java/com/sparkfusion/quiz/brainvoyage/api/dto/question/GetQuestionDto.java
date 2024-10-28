@@ -6,18 +6,28 @@ public class GetQuestionDto {
 
     private Long id;
     private String name;
+    private String imageUrl;
     private Integer category;
     private Integer difficulty;
     private String explanation;
     private QuizEntity quiz;
 
-    public GetQuestionDto(Long id, String name, Integer category, Integer difficulty, String explanation, QuizEntity quiz) {
+    public GetQuestionDto(Long id, String name, String imageUrl, Integer category, Integer difficulty, String explanation, QuizEntity quiz) {
         this.id = id;
         this.name = name;
+        this.imageUrl = imageUrl;
         this.category = category;
         this.difficulty = difficulty;
         this.explanation = explanation;
         this.quiz = quiz;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {

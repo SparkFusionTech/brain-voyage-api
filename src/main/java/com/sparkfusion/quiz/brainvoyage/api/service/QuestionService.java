@@ -10,9 +10,13 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuestionRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
+import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,27 +28,45 @@ public class QuestionService {
     private final AddQuestionFactory addQuestionFactory;
     private final GetQuestionFactory getQuestionFactory;
 
+    private final ImageWorker imageWorker;
+
     public QuestionService(
             QuestionRepository questionRepository,
             QuizRepository quizRepository,
             AddQuestionFactory addQuestionFactory,
-            GetQuestionFactory getQuestionFactory
+            GetQuestionFactory getQuestionFactory,
+            ImageWorker imageWorker
     ) {
         this.questionRepository = questionRepository;
         this.quizRepository = quizRepository;
         this.addQuestionFactory = addQuestionFactory;
         this.getQuestionFactory = getQuestionFactory;
+        this.imageWorker = imageWorker;
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetQuestionDto> readQuestionsByQuizId(Long quizId) {
+        try {
+            List<QuestionEntity> questions = questionRepository.readQuestionByQuizId(quizId);
+            return questions.stream()
+                    .map(getQuestionFactory::mapToDto)
+                    .toList();
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional
-    public GetQuestionDto addQuestion(AddQuestionDto addQuestionDto) {
+    public GetQuestionDto addQuestion(AddQuestionDto addQuestionDto, MultipartFile image) {
         try {
             Optional<QuizEntity> quiz = quizRepository.findById(addQuestionDto.getQuizId());
             if (quiz.isEmpty()) {
                 throw new QuizNotFoundException();
             }
 
-            QuestionEntity question = questionRepository.save(addQuestionFactory.mapToEntity(addQuestionDto, quiz.get()));
+            String imageUrl = imageWorker.saveImage(image, ImageWorker.ImageType.QUESTION);
+
+            QuestionEntity question = questionRepository.save(addQuestionFactory.mapToEntity(addQuestionDto, quiz.get(), imageUrl));
             return getQuestionFactory.mapToDto(question);
         } catch (QuizNotFoundException e) {
             throw e;
