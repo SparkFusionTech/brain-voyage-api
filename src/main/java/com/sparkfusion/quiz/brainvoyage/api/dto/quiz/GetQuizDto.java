@@ -12,9 +12,13 @@ public final class GetQuizDto {
 
     private String description;
 
+    private Long catalogType;
+
     private Double rating;
 
-    private Integer type;
+    private Integer status;
+
+    private String imageUrl;
 
     private Integer questions;
 
@@ -26,8 +30,10 @@ public final class GetQuizDto {
             Long id,
             String title,
             String description,
+            Long catalogType,
             Double rating,
-            Integer type,
+            Integer status,
+            String imageUrl,
             Integer questions,
             LocalDateTime createdAt,
             GetUserDto user
@@ -35,11 +41,29 @@ public final class GetQuizDto {
         this.id = id;
         this.title = title;
         this.description = description;
+        this.catalogType = catalogType;
         this.rating = rating;
-        this.type = type;
+        this.status = status;
+        this.imageUrl = imageUrl;
         this.questions = questions;
         this.createdAt = createdAt;
         this.user = user;
+    }
+
+    public Long getCatalogType() {
+        return catalogType;
+    }
+
+    public void setCatalogType(Long catalogType) {
+        this.catalogType = catalogType;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -74,12 +98,12 @@ public final class GetQuizDto {
         this.rating = rating;
     }
 
-    public Integer getType() {
-        return type;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public Integer getQuestions() {

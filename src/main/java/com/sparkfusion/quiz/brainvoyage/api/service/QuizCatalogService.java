@@ -2,7 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.service;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz_catalog.GetQuizCatalogDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz_catalog.GetQuizCatalogFactory;
-import com.sparkfusion.quiz.brainvoyage.api.entity.QuizCatalogEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.catalog.QuizCatalogEntity;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizCatalogRepository;
 import org.springframework.stereotype.Service;

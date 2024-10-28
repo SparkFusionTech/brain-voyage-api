@@ -1,5 +1,6 @@
-package com.sparkfusion.quiz.brainvoyage.api.entity;
+package com.sparkfusion.quiz.brainvoyage.api.entity.catalog;
 
+import com.sparkfusion.quiz.brainvoyage.api.entity.utils.EntityUtils;
 import jakarta.persistence.*;
 
 @Entity
@@ -9,18 +10,18 @@ public class QuizCatalogEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", updatable = false, nullable = false)
-    private Long id;
+    private Long  id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", nullable = false, unique = true, length = 16)
     private String name;
 
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "start_gradient_color", nullable = false)
+    @Column(name = "start_gradient_color", nullable = false, length = 9)
     private String startGradientColor;
 
-    @Column(name = "end_gradient_color", nullable = false)
+    @Column(name = "end_gradient_color", nullable = false, length = 9)
     private String endGradientColor;
 
     public Long getId() {
@@ -59,17 +60,3 @@ public class QuizCatalogEntity {
         this.endGradientColor = endGradientColor;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

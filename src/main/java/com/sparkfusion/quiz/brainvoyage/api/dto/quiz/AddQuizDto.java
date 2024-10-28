@@ -7,27 +7,54 @@ public final class AddQuizDto {
     @NotBlank(message = "Title must not be blank")
     private String title;
 
+    @NotNull(message = "Catalog ,ust not be null")
+    private Integer catalogType;
+
     @NotBlank(message = "Description must not be blank")
     private String description;
 
-    @NotNull(message = "Type must not be empty")
-    private Integer type;
+    @NotNull(message = "Image must not be null")
+    private String imageUrl;
 
     @NotNull(message = "Questions count must not be empty")
     @Min(value = 1, message = "Questions count must be at least 1")
-    @Max(value = 99, message = "Questions count must not be more than 99")
+    @Max(value = 50, message = "Questions count must not be more than 50")
     private Integer questions;
 
     @NotBlank(message = "Email must not be blank")
     @Email(message = "Email should be valid")
     private String userEmail;
 
-    public AddQuizDto(String title, String description, Integer type, Integer questions, String userEmail) {
+    public AddQuizDto(
+            String title,
+            Integer catalogType,
+            String description,
+            String imageUrl,
+            Integer questions,
+            String userEmail
+    ) {
         this.title = title;
+        this.catalogType = catalogType;
         this.description = description;
-        this.type = type;
+        this.imageUrl = imageUrl;
         this.questions = questions;
         this.userEmail = userEmail;
+    }
+
+    public @NotNull(message = "Catalog ,ust not be null") Integer getCatalogType() {
+        return catalogType;
+    }
+
+    public void setCatalogType(@NotNull(message = "Catalog ,ust not be null") Integer catalogType) {
+        this.catalogType = catalogType;
+    }
+
+    public @NotNull(message = "Image must not be null") String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(@NotNull(message = "Image must not be null") String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public @NotBlank(message = "Title must not be blank") String getTitle() {
@@ -50,17 +77,6 @@ public final class AddQuizDto {
             String description
     ) {
         this.description = description;
-    }
-
-    public @NotNull(message = "Type must not be empty") Integer getType() {
-        return type;
-    }
-
-    public void setType(
-            @NotNull(message = "Type must not be empty")
-            Integer type
-    ) {
-        this.type = type;
     }
 
     public @NotNull(message = "Questions count must not be empty") Integer getQuestions() {

@@ -1,7 +1,6 @@
-package com.sparkfusion.quiz.brainvoyage.api.controller;
+package com.sparkfusion.quiz.brainvoyage.api.controller.catalog;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz_catalog.GetQuizCatalogDto;
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.QuizCatalogService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;

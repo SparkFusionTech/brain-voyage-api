@@ -1,6 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.repository;
 
-import com.sparkfusion.quiz.brainvoyage.api.entity.QuizEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

@@ -1,7 +1,7 @@
 package com.sparkfusion.quiz.brainvoyage.api.dto.user;
 
 import com.sparkfusion.quiz.brainvoyage.api.encryptor.PasswordEncryptor;
-import com.sparkfusion.quiz.brainvoyage.api.entity.UserEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.user.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

@@ -1,6 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.dto.quiz_catalog;
 
-import com.sparkfusion.quiz.brainvoyage.api.entity.QuizCatalogEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.catalog.QuizCatalogEntity;
 import org.springframework.stereotype.Component;
 
 @Component

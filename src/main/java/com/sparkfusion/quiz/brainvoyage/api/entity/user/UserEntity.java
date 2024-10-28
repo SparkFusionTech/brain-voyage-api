@@ -1,5 +1,6 @@
-package com.sparkfusion.quiz.brainvoyage.api.entity;
+package com.sparkfusion.quiz.brainvoyage.api.entity.user;
 
+import com.sparkfusion.quiz.brainvoyage.api.entity.utils.EntityUtils;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,20 +19,20 @@ public final class UserEntity implements UserDetails {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true, length = 256)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password", nullable = false, length = 128)
     private String password;
 
-    @Column(name = "icon_url")
+    @Column(name = "icon_url", nullable = false)
     private String iconUrl;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "name", unique = true, length = 32)
     private String name;
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false, nullable = false)
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP", updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public static String generateUserName() {
@@ -66,10 +67,6 @@ public final class UserEntity implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
     }
 
     public Long getId() {

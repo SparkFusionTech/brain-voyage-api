@@ -1,5 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.controller;
 
+import com.sparkfusion.quiz.brainvoyage.api.controller.image.ImageSearchController;
 import com.sparkfusion.quiz.brainvoyage.api.dto.image_search.PixabayImageDto;
 import com.sparkfusion.quiz.brainvoyage.api.exception.BadConnectionException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnableExecuteRequestException;

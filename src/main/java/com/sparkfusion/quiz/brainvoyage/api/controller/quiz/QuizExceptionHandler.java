@@ -1,4 +1,4 @@
-package com.sparkfusion.quiz.brainvoyage.api.controller;
+package com.sparkfusion.quiz.brainvoyage.api.controller.quiz;
 
 import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import org.springframework.http.HttpStatus;

@@ -4,11 +4,14 @@ import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizFactory;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizFactory;
-import com.sparkfusion.quiz.brainvoyage.api.entity.QuizEntity;
-import com.sparkfusion.quiz.brainvoyage.api.entity.UserEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.catalog.QuizCatalogEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizEntity;
+import com.sparkfusion.quiz.brainvoyage.api.entity.user.UserEntity;
+import com.sparkfusion.quiz.brainvoyage.api.exception.QuizCatalogNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
+import com.sparkfusion.quiz.brainvoyage.api.repository.QuizCatalogRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -22,6 +25,7 @@ public class QuizService {
 
     private final QuizRepository quizRepository;
     private final UserRepository userRepository;
+    private final QuizCatalogRepository quizCatalogRepository;
 
     private final GetQuizFactory getQuizFactory;
     private final AddQuizFactory addQuizFactory;
@@ -29,11 +33,13 @@ public class QuizService {
     public QuizService(
             QuizRepository quizRepository,
             UserRepository userRepository,
+            QuizCatalogRepository quizCatalogRepository,
             GetQuizFactory getQuizFactory,
             AddQuizFactory addQuizFactory
     ) {
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
+        this.quizCatalogRepository = quizCatalogRepository;
         this.getQuizFactory = getQuizFactory;
         this.addQuizFactory = addQuizFactory;
     }
@@ -74,11 +80,17 @@ public class QuizService {
                 throw new UserNotFoundException("User with email " + addQuizDto.getUserEmail() + " was not found!");
             }
 
-            QuizEntity quiz = addQuizFactory.mapToEntity(addQuizDto, existingUser.get());
+            Optional<QuizCatalogEntity> existingCatalog = quizCatalogRepository.findById(
+                    Long.parseLong(addQuizDto.getCatalogType().toString()));
+            if (existingCatalog.isEmpty()) {
+                throw new QuizCatalogNotFoundException();
+            }
+
+            QuizEntity quiz = addQuizFactory.mapToEntity(addQuizDto, existingUser.get(), existingCatalog.get());
             QuizEntity savedQuiz = quizRepository.save(quiz);
             return getQuizFactory.mapToDto(savedQuiz);
-        } catch (UserNotFoundException userNotFoundException) {
-            throw userNotFoundException;
+        } catch (UserNotFoundException | QuizCatalogNotFoundException e) {
+            throw e;
         } catch (Exception exception) {
             throw new UnexpectedException("Error adding quiz");
         }

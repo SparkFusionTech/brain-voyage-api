@@ -1,4 +1,4 @@
-package com.sparkfusion.quiz.brainvoyage.api.controller;
+package com.sparkfusion.quiz.brainvoyage.api.controller.user;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
@@ -72,6 +72,18 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(summary = "Get user information", description = "Retrieves user information based on the provided authorization token.")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "User information retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = GetUserInfoDto.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "User not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/info")
     public ResponseEntity<GetUserInfoDto> readUserInfo(@RequestHeader("Authorization") String authorization) {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -80,6 +92,21 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(
+            summary = "Check token validity",
+            description = "Checks if the provided token is valid."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Token is valid",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = Map.class))
+            ),
+            @ApiResponse(responseCode = "401", description = "Unauthorized, invalid token"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
     @GetMapping("/check-token")
     public ResponseEntity<Map<String, String>> checkToken(@RequestHeader("Authorization") String authorizationHeader) {
         Map<String, String> response = new HashMap<>();
@@ -144,6 +171,24 @@ public class UserController {
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @Operation(
+            summary = "Create a new user",
+            description = "Registers a new user with specified email and password, and optionally an account icon."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201", description = "User created successfully",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = AddUserDto.class))
+                    ),
+                    @ApiResponse(responseCode = "400", description = "Bad request, validation errors occurred"),
+                    @ApiResponse(responseCode = "409", description = "Conflict, user with this email already exists"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
     @PostMapping("/create")
     public ResponseEntity<AddUserDto> createUser(
             @Valid

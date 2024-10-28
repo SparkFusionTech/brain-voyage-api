@@ -1,4 +1,4 @@
-package com.sparkfusion.quiz.brainvoyage.api.controller;
+package com.sparkfusion.quiz.brainvoyage.api.controller.user;
 
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserAlreadyExistsException;
 import io.swagger.v3.oas.annotations.Operation;
