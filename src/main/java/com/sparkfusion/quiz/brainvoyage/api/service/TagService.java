@@ -60,6 +60,28 @@ public class TagService {
             throw new UnexpectedException();
         }
     }
+
+    @Transactional
+    public Integer addTags(List<String> names, Long quizId) {
+        try {
+            Optional<QuizEntity> existingQuiz = quizRepository.findById(quizId);
+            if (existingQuiz.isEmpty()) {
+                throw new QuizNotFoundException();
+            }
+
+            Integer count = 0;
+            for (String name : names) {
+                AddTagDto addTagDto = new AddTagDto(name, quizId);
+                tagRepository.save(addTagFactory.mapToEntity(addTagDto, existingQuiz.get()));
+                count++;
+            }
+            return count;
+        } catch (QuizNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
 }
 
 

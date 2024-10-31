@@ -1,6 +1,9 @@
 package com.sparkfusion.quiz.brainvoyage.api.dto.quiz;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public final class AddQuizDto {
 
@@ -8,7 +11,7 @@ public final class AddQuizDto {
     private String title;
 
     @NotNull(message = "Catalog must not be null")
-    private Integer catalogId;
+    private Long catalogId;
 
     @NotBlank(message = "Description must not be blank")
     private String description;
@@ -18,23 +21,20 @@ public final class AddQuizDto {
     @Max(value = 50, message = "Questions count must not be more than 50")
     private Integer questions;
 
-    @NotBlank(message = "Email must not be blank")
-    @Email(message = "Email should be valid")
-    private String userEmail;
+    public AddQuizDto() {}
 
-    public AddQuizDto(String title, Integer catalogId, String description, Integer questions, String userEmail) {
+    public AddQuizDto(String title, Long catalogId, String description, Integer questions) {
         this.title = title;
         this.catalogId = catalogId;
         this.description = description;
         this.questions = questions;
-        this.userEmail = userEmail;
     }
 
-    public @NotNull(message = "Catalog must not be null") Integer getCatalogId() {
+    public @NotNull(message = "Catalog must not be null") Long getCatalogId() {
         return catalogId;
     }
 
-    public void setCatalogId(@NotNull(message = "Catalog must not be null") Integer catalogId) {
+    public void setCatalogId(@NotNull(message = "Catalog must not be null") Long catalogId) {
         this.catalogId = catalogId;
     }
 
@@ -69,17 +69,5 @@ public final class AddQuizDto {
             Integer questions
     ) {
         this.questions = questions;
-    }
-
-    public @NotBlank(message = "Email must not be blank") @Email(message = "Email should be valid") String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(
-            @NotBlank(message = "Email must not be blank")
-            @Email(message = "Email should be valid")
-            String userEmail
-    ) {
-        this.userEmail = userEmail;
     }
 }

@@ -3,6 +3,7 @@ package com.sparkfusion.quiz.brainvoyage.api.controller.question;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.AddQuestionDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.GetQuestionDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.QuestionService;
+import com.sparkfusion.quiz.brainvoyage.api.worker.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,8 +26,11 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
+    private final JsonParser jsonParser;
+
     public QuestionController(QuestionService questionService) {
         this.questionService = questionService;
+        jsonParser = new JsonParser();
     }
 
     @Operation(
@@ -78,14 +82,15 @@ public class QuestionController {
     public ResponseEntity<GetQuestionDto> createQuestion(
             @Valid
             @NotNull
-            @RequestBody
-            AddQuestionDto addQuestionDto,
+            @RequestPart("addQuestionDto")
+            String addQuestionDto,
 
             @NotNull
             @RequestPart("questionImage")
             MultipartFile questionImage
     ) {
-        GetQuestionDto getQuestionDto = questionService.addQuestion(addQuestionDto, questionImage);
+        AddQuestionDto dto = jsonParser.parseJsonToDto(addQuestionDto, AddQuestionDto.class);
+        GetQuestionDto getQuestionDto = questionService.addQuestion(dto, questionImage);
         return new ResponseEntity<>(getQuestionDto, HttpStatus.CREATED);
     }
 }

@@ -28,7 +28,7 @@ public final class ImageWorker {
     public String saveImage(MultipartFile image, ImageType imageType) throws IOException {
         directoryProvider.ensureDirectoryExists(imageType);
         String directoryPath = directoryProvider.getDirectoryPath(imageType);
-        String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+        String fileName = UUID.randomUUID() + ".png";
         File file = new File(directoryPath, fileName);
 
         try (FileOutputStream outputStream = new FileOutputStream(file)) {

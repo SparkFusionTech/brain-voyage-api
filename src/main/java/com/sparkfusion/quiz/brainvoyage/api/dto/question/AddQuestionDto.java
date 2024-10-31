@@ -1,7 +1,10 @@
 package com.sparkfusion.quiz.brainvoyage.api.dto.question;
 
+import com.sparkfusion.quiz.brainvoyage.api.dto.answer.AddAnswerDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+
+import java.util.List;
 
 public class AddQuestionDto {
 
@@ -19,12 +22,26 @@ public class AddQuestionDto {
     @NotNull(message = "Quiz must not be null")
     private Long quizId;
 
-    public AddQuestionDto(String name, Integer category, Integer difficulty, String explanation, Long quizId) {
+    @NotNull(message = "Answers must not be null")
+    private List<AddAnswerDto> answers;
+
+    public AddQuestionDto() {
+    }
+
+    public AddQuestionDto(
+            String name,
+            Integer category,
+            Integer difficulty,
+            String explanation,
+            Long quizId,
+            List<AddAnswerDto> answers
+    ) {
         this.name = name;
         this.category = category;
         this.difficulty = difficulty;
         this.explanation = explanation;
         this.quizId = quizId;
+        this.answers = answers;
     }
 
     public @NotBlank(message = "Name must not be blank") String getName() {
@@ -65,5 +82,13 @@ public class AddQuestionDto {
 
     public void setQuizId(@NotNull(message = "Quiz must not be null") Long quizId) {
         this.quizId = quizId;
+    }
+
+    public @NotNull(message = "Answers must not be null") List<AddAnswerDto> getAnswers() {
+        return answers;
+    }
+
+    public void setAnswers(@NotNull(message = "Answers must not be null") List<AddAnswerDto> answers) {
+        this.answers = answers;
     }
 }

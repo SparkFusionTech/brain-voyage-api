@@ -80,11 +80,11 @@ public class QuizService {
     }
 
     @Transactional
-    public GetQuizDto addQuiz(AddQuizDto addQuizDto, @NotNull MultipartFile image) {
+    public GetQuizDto addQuiz(AddQuizDto addQuizDto, @NotNull MultipartFile image, String userEmail) {
         try {
-            Optional<UserEntity> existingUser = userRepository.findByEmail(addQuizDto.getUserEmail());
+            Optional<UserEntity> existingUser = userRepository.findByEmail(userEmail);
             if (existingUser.isEmpty()) {
-                throw new UserNotFoundException("User with email " + addQuizDto.getUserEmail() + " was not found!");
+                throw new UserNotFoundException("User with email " + userEmail + " was not found!");
             }
 
             Optional<QuizCatalogEntity> existingCatalog = quizCatalogRepository.findById(

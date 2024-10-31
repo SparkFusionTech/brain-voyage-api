@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,6 +81,39 @@ public class TagController {
     ) {
         GetTagDto getTagDto = tagService.addTag(addTagDto);
         return new ResponseEntity<>(getTagDto, HttpStatus.CREATED);
+    }
+
+    @Operation(
+            summary = "Create new tags",
+            description = "Allows you to create a list of new tags associated with a quiz."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Tags successfully created",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = GetTagDto.class))
+                            )
+                    ),
+                    @ApiResponse(responseCode = "404", description = "Quiz not found"),
+                    @ApiResponse(responseCode = "500", description = "An error occurred on the server")
+            }
+    )
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/createAll")
+    public ResponseEntity<Integer> createTags(
+            @RequestParam("tags")
+            List<String> names,
+
+            @Valid
+            @RequestParam("quizId")
+            @NotNull(message = "Quiz id must not be null")
+            Long quizId
+    ) {
+        Integer count = tagService.addTags(names, quizId);
+        return new ResponseEntity<>(count, HttpStatus.CREATED);
     }
 }
 

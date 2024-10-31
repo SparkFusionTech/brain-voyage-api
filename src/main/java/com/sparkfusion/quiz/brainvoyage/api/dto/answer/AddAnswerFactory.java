@@ -10,7 +10,7 @@ public class AddAnswerFactory {
     public AnswerEntity mapToEntity(AddAnswerDto addAnswerDto, QuestionEntity question) {
         AnswerEntity answer = new AnswerEntity();
         answer.setName(addAnswerDto.getName());
-        answer.setCorrect(addAnswerDto.getCorrect());
+        answer.setCorrect(addAnswerDto.getIsCorrect());
         answer.setNumber(addAnswerDto.getNumber());
         answer.setQuestion(question);
         return answer;

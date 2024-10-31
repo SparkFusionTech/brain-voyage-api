@@ -1,5 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.service;
 
+import com.sparkfusion.quiz.brainvoyage.api.dto.answer.AddAnswerDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.AddQuestionDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.AddQuestionFactory;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.GetQuestionDto;
@@ -14,7 +15,6 @@ import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,6 +24,8 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final QuizRepository quizRepository;
+
+    private final AnswerService answerService;
 
     private final AddQuestionFactory addQuestionFactory;
     private final GetQuestionFactory getQuestionFactory;
@@ -35,13 +37,15 @@ public class QuestionService {
             QuizRepository quizRepository,
             AddQuestionFactory addQuestionFactory,
             GetQuestionFactory getQuestionFactory,
-            ImageWorker imageWorker
+            ImageWorker imageWorker,
+            AnswerService answerService
     ) {
         this.questionRepository = questionRepository;
         this.quizRepository = quizRepository;
         this.addQuestionFactory = addQuestionFactory;
         this.getQuestionFactory = getQuestionFactory;
         this.imageWorker = imageWorker;
+        this.answerService = answerService;
     }
 
     @Transactional(readOnly = true)
@@ -67,6 +71,9 @@ public class QuestionService {
             String imageUrl = imageWorker.saveImage(image, ImageWorker.ImageType.QUESTION);
 
             QuestionEntity question = questionRepository.save(addQuestionFactory.mapToEntity(addQuestionDto, quiz.get(), imageUrl));
+            for (AddAnswerDto addAnswerDto : addQuestionDto.getAnswers()) {
+                answerService.addAnswer(addAnswerDto, question.getId());
+            }
             return getQuestionFactory.mapToDto(question);
         } catch (QuizNotFoundException e) {
             throw e;

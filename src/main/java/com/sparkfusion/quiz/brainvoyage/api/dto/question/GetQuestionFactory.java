@@ -13,8 +13,7 @@ public class GetQuestionFactory {
                 question.getImageUrl(),
                 question.getCategory(),
                 question.getDifficulty(),
-                question.getExplanation(),
-                question.getQuiz()
+                question.getExplanation()
         );
     }
 }

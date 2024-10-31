@@ -3,16 +3,17 @@ package com.sparkfusion.quiz.brainvoyage.api.controller.quiz;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.QuizService;
+import com.sparkfusion.quiz.brainvoyage.api.worker.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,8 +25,11 @@ public class QuizController {
 
     private final QuizService quizService;
 
+    private final JsonParser jsonParser;
+
     public QuizController(QuizService quizService) {
         this.quizService = quizService;
+        this.jsonParser = new JsonParser();
     }
 
     @Operation(
@@ -119,20 +123,17 @@ public class QuizController {
             }
     )
     @SecurityRequirement(name = "Bearer Authentication")
-    @PostMapping("/create")
+    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<GetQuizDto> createQuiz(
-            @Valid
-            @NotNull
-            @RequestBody
-            AddQuizDto addQuizDto,
-
-            @NotNull
-            @RequestPart("quizImage")
-            MultipartFile quizImage
+            @RequestPart("addQuizDto") String addQuizDtoJson,
+            @RequestPart("quizImage") MultipartFile quizImage
     ) {
-        GetQuizDto getQuizDto = quizService.addQuiz(addQuizDto, quizImage);
+        AddQuizDto addQuizDto = jsonParser.parseJsonToDto(addQuizDtoJson, AddQuizDto.class);
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        GetQuizDto getQuizDto = quizService.addQuiz(addQuizDto, quizImage, email);
         return new ResponseEntity<>(getQuizDto, HttpStatus.CREATED);
     }
+
 }
 
 

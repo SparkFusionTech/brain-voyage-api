@@ -50,9 +50,9 @@ public class AnswerService {
     }
 
     @Transactional
-    public GetAnswerDto addAnswer(AddAnswerDto addAnswerDto) {
+    public GetAnswerDto addAnswer(AddAnswerDto addAnswerDto, Long questionId) {
         try {
-            Optional<QuestionEntity> question = questionRepository.findById(addAnswerDto.getQuestionId());
+            Optional<QuestionEntity> question = questionRepository.findById(questionId);
             if (question.isEmpty()) {
                 throw new QuestionNotFoundException();
             }

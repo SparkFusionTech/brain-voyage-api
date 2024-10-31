@@ -1,9 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.exception_handler;
 
-import com.sparkfusion.quiz.brainvoyage.api.exception.BadConnectionException;
-import com.sparkfusion.quiz.brainvoyage.api.exception.UnableExecuteRequestException;
-import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
-import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
+import com.sparkfusion.quiz.brainvoyage.api.exception.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -20,6 +17,13 @@ import java.util.Map;
 
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
+
+    @ExceptionHandler(DataParsingException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleDataParsingException(DataParsingException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(UnableExecuteRequestException.class)
     @ResponseBody

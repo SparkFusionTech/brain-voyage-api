@@ -13,14 +13,13 @@ public class AddAnswerDto {
 
     private Boolean isCorrect;
 
-    @NotNull(message = "Question must not be null")
-    private Long questionId;
+    public AddAnswerDto() {
+    }
 
-    public AddAnswerDto(String name, Integer number, Boolean isCorrect, Long questionId) {
+    public AddAnswerDto(String name, Integer number, Boolean isCorrect) {
         this.name = name;
         this.number = number;
         this.isCorrect = isCorrect;
-        this.questionId = questionId;
     }
 
     public @NotBlank(message = "Name must not be blank") String getName() {
@@ -39,19 +38,11 @@ public class AddAnswerDto {
         this.number = number;
     }
 
-    public Boolean getCorrect() {
+    public Boolean getIsCorrect() {
         return isCorrect;
     }
 
-    public void setCorrect(Boolean correct) {
+    public void setIsCorrect(Boolean correct) {
         isCorrect = correct;
-    }
-
-    public @NotNull(message = "Question must not be null") Long getQuestionId() {
-        return questionId;
-    }
-
-    public void setQuestionId(@NotNull(message = "Question must not be null") Long questionId) {
-        this.questionId = questionId;
     }
 }
