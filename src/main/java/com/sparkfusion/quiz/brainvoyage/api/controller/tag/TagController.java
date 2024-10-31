@@ -1,6 +1,7 @@
 package com.sparkfusion.quiz.brainvoyage.api.controller.tag;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.tag.AddTagDto;
+import com.sparkfusion.quiz.brainvoyage.api.dto.tag.AddTagsRequestDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.tag.GetTagDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.TagService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,15 +104,9 @@ public class TagController {
     @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/createAll")
     public ResponseEntity<Integer> createTags(
-            @RequestParam("tags")
-            List<String> names,
-
-            @Valid
-            @RequestParam("quizId")
-            @NotNull(message = "Quiz id must not be null")
-            Long quizId
+            @RequestBody AddTagsRequestDto tagsRequest
     ) {
-        Integer count = tagService.addTags(names, quizId);
+        Integer count = tagService.addTags(tagsRequest.getTags(), tagsRequest.getQuizId());
         return new ResponseEntity<>(count, HttpStatus.CREATED);
     }
 }
