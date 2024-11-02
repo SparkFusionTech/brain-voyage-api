@@ -16,6 +16,9 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
     @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.catalog.id = :catalogId AND quiz.type = 1")
     List<QuizEntity> findAllByType(@Param("catalogId") Long catalogId);
 
+    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.user.email = :userEmail ORDER BY quiz.createdAt")
+    List<QuizEntity> findAllByUserEmail(@Param("userEmail") String userEmail);
+
     @Modifying
     @Transactional
     @Query("DELETE FROM QuizEntity WHERE id = :id")

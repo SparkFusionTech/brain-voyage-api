@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.controller.quiz;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizDto;
+import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.OnlyQuizDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.QuizService;
 import com.sparkfusion.quiz.brainvoyage.api.worker.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.websocket.server.PathParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -142,6 +142,14 @@ public class QuizController {
     ) {
         GetQuizDto getQuizDto = quizService.readQuizById(quizId);
         return new ResponseEntity<>(getQuizDto, HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/submitted")
+    public ResponseEntity<List<OnlyQuizDto>> readQuizzesByUserEmail() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        List<OnlyQuizDto> quizzes = quizService.readQuizzesByUserEmail(email);
+        return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
 }
 

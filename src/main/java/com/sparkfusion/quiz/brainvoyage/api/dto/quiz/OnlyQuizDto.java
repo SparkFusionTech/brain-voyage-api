@@ -1,10 +1,8 @@
 package com.sparkfusion.quiz.brainvoyage.api.dto.quiz;
 
-import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
-
 import java.time.LocalDateTime;
 
-public final class GetQuizDto {
+public class OnlyQuizDto {
 
     private Long id;
 
@@ -12,7 +10,7 @@ public final class GetQuizDto {
 
     private String description;
 
-    private Long status;
+    private Integer status;
 
     private Double rating;
 
@@ -22,18 +20,15 @@ public final class GetQuizDto {
 
     private LocalDateTime createdAt;
 
-    private GetUserDto user;
-
-    public GetQuizDto(
+    public OnlyQuizDto(
             Long id,
             String title,
             String description,
-            Long status,
+            Integer status,
             Double rating,
             String imageUrl,
             Integer questions,
-            LocalDateTime createdAt,
-            GetUserDto user
+            LocalDateTime createdAt
     ) {
         this.id = id;
         this.title = title;
@@ -43,23 +38,6 @@ public final class GetQuizDto {
         this.imageUrl = imageUrl;
         this.questions = questions;
         this.createdAt = createdAt;
-        this.user = user;
-    }
-
-    public Long getStatus() {
-        return status;
-    }
-
-    public void setStatus(Long status) {
-        this.status = status;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 
     public Long getId() {
@@ -86,12 +64,28 @@ public final class GetQuizDto {
         this.description = description;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     public Double getRating() {
         return rating;
     }
 
     public void setRating(Double rating) {
         this.rating = rating;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public Integer getQuestions() {
@@ -108,13 +102,5 @@ public final class GetQuizDto {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
-    }
-
-    public GetUserDto getUser() {
-        return user;
-    }
-
-    public void setUser(GetUserDto user) {
-        this.user = user;
     }
 }

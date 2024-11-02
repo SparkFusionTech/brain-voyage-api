@@ -1,9 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.service;
 
-import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizDto;
-import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.AddQuizFactory;
-import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizDto;
-import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.GetQuizFactory;
+import com.sparkfusion.quiz.brainvoyage.api.dto.quiz.*;
 import com.sparkfusion.quiz.brainvoyage.api.entity.catalog.QuizCatalogEntity;
 import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizEntity;
 import com.sparkfusion.quiz.brainvoyage.api.entity.user.UserEntity;
@@ -32,6 +29,7 @@ public class QuizService {
 
     private final GetQuizFactory getQuizFactory;
     private final AddQuizFactory addQuizFactory;
+    private final OnlyQuizFactory onlyQuizFactory;
 
     private final ImageWorker imageWorker;
 
@@ -41,6 +39,7 @@ public class QuizService {
             QuizCatalogRepository quizCatalogRepository,
             GetQuizFactory getQuizFactory,
             AddQuizFactory addQuizFactory,
+            OnlyQuizFactory onlyQuizFactory,
             ImageWorker imageWorker
     ) {
         this.quizRepository = quizRepository;
@@ -49,6 +48,7 @@ public class QuizService {
         this.getQuizFactory = getQuizFactory;
         this.addQuizFactory = addQuizFactory;
         this.imageWorker = imageWorker;
+        this.onlyQuizFactory = onlyQuizFactory;
     }
 
     @Transactional
@@ -88,6 +88,18 @@ public class QuizService {
             return getQuizFactory.mapToDto(quiz.get());
         } catch (QuizNotFoundException e) {
             throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<OnlyQuizDto> readQuizzesByUserEmail(String userEmail) {
+        try {
+            List<QuizEntity> quizzes = quizRepository.findAllByUserEmail(userEmail);
+            return quizzes.stream()
+                    .map(onlyQuizFactory::mapToDto)
+                    .toList();
         } catch (Exception e) {
             throw new UnexpectedException();
         }
