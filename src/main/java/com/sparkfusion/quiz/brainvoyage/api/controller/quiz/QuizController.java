@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.websocket.server.PathParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -92,9 +93,9 @@ public class QuizController {
     @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping
     public ResponseEntity<List<GetQuizDto>> readAllQuizByType(
-            @RequestParam("type") Integer type
+            @RequestParam("catalogId") Long catalogId
     ) {
-        List<GetQuizDto> quizzes = quizService.readAllQuizzesByType(type);
+        List<GetQuizDto> quizzes = quizService.readAllQuizzesByType(catalogId);
         return new ResponseEntity<>(quizzes, HttpStatus.OK);
     }
 
@@ -134,6 +135,14 @@ public class QuizController {
         return new ResponseEntity<>(getQuizDto, HttpStatus.CREATED);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/{quizId}")
+    public ResponseEntity<GetQuizDto> getQuizById(
+            @PathVariable("quizId") Long quizId
+    ) {
+        GetQuizDto getQuizDto = quizService.readQuizById(quizId);
+        return new ResponseEntity<>(getQuizDto, HttpStatus.OK);
+    }
 }
 
 

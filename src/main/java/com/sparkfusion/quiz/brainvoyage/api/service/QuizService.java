@@ -68,14 +68,28 @@ public class QuizService {
     }
 
     @Transactional(readOnly = true)
-    public List<GetQuizDto> readAllQuizzesByType(Integer type) {
+    public List<GetQuizDto> readAllQuizzesByType(Long catalogId) {
         try {
-            List<QuizEntity> quizzes = quizRepository.findAllByType(type);
+            List<QuizEntity> quizzes = quizRepository.findAllByType(catalogId);
             return quizzes.stream()
                     .map(getQuizFactory::mapToDto)
                     .toList();
         } catch (Exception exception) {
             throw new UnexpectedException("Error retrieving quizzes by type");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public GetQuizDto readQuizById(Long quizId) {
+        try {
+            Optional<QuizEntity> quiz = quizRepository.findById(quizId);
+            if (quiz.isEmpty()) throw new QuizNotFoundException();
+
+            return getQuizFactory.mapToDto(quiz.get());
+        } catch (QuizNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
         }
     }
 

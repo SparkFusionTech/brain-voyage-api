@@ -35,7 +35,7 @@ public final class ImageWorker {
             outputStream.write(image.getBytes());
         }
 
-        return serverUrl + "/" + directoryPath + "/" + fileName;
+        return serverUrl + directoryPath + "/" + fileName;
     }
 
     public enum ImageType {

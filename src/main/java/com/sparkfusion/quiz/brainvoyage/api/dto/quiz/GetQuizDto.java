@@ -16,8 +16,6 @@ public final class GetQuizDto {
 
     private Double rating;
 
-    private Integer status;
-
     private String imageUrl;
 
     private Integer questions;
@@ -32,7 +30,6 @@ public final class GetQuizDto {
             String description,
             Long catalogType,
             Double rating,
-            Integer status,
             String imageUrl,
             Integer questions,
             LocalDateTime createdAt,
@@ -43,7 +40,6 @@ public final class GetQuizDto {
         this.description = description;
         this.catalogType = catalogType;
         this.rating = rating;
-        this.status = status;
         this.imageUrl = imageUrl;
         this.questions = questions;
         this.createdAt = createdAt;
@@ -96,14 +92,6 @@ public final class GetQuizDto {
 
     public void setRating(Double rating) {
         this.rating = rating;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 
     public Integer getQuestions() {

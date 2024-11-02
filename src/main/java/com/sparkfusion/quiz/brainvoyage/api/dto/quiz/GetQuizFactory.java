@@ -20,7 +20,6 @@ public final class GetQuizFactory {
                 quiz.getDescription(),
                 quiz.getCatalog().getId(),
                 quiz.getRating(),
-                quiz.getType(),
                 quiz.getImageUrl(),
                 quiz.getQuestions(),
                 quiz.getCreatedAt(),

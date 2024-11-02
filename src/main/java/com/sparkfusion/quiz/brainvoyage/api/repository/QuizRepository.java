@@ -13,7 +13,8 @@ import java.util.List;
 @Repository
 public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
 
-    List<QuizEntity> findAllByType(Integer type);
+    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.catalog.id = :catalogId AND quiz.type = 1")
+    List<QuizEntity> findAllByType(@Param("catalogId") Long catalogId);
 
     @Modifying
     @Transactional
