@@ -12,5 +12,8 @@ import java.util.List;
 public interface TagRepository extends JpaRepository<TagEntity, Long> {
 
     @Query("SELECT tag FROM TagEntity tag WHERE tag.quiz.id = :quizId")
-    List<TagEntity> readTagByQuizId(@Param("quizId") Long quizId);
+    List<TagEntity> readTagsByQuizId(@Param("quizId") Long quizId);
+
+    @Query("DELETE FROM TagEntity tag WHERE tag.name = :name AND tag.quiz.id = :quizId")
+    void deleteAllByNameAndQuizId(@Param("name") String name ,@Param("quizId") Long quizId);
 }

@@ -9,9 +9,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
+
+    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.user.id = :userId AND quiz.id = :quizId")
+    Optional<QuizEntity> findQuizByUserIdAndQuizId(@Param("userId") Long userId, @Param("quizId") Long quizId);
 
     @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.catalog.id = :catalogId AND quiz.type = 1")
     List<QuizEntity> findAllByType(@Param("catalogId") Long catalogId);
