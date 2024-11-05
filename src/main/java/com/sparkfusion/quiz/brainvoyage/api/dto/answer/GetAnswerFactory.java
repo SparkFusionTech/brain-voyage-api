@@ -11,8 +11,7 @@ public class GetAnswerFactory {
                 answer.getId(),
                 answer.getName(),
                 answer.getNumber(),
-                answer.isCorrect(),
-                answer.getQuestion()
+                answer.isCorrect()
         );
     }
 }

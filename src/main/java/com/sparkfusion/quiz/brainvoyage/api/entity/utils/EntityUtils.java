@@ -8,4 +8,5 @@ public final class EntityUtils {
     public static final String TAG_TABLE = "tags";
     public static final String QUESTION_TABLE = "questions";
     public static final String ANSWER_TABLE = "answers";
+    public static final String MODERATION_ANSWER_TABLE = "moderation_answer";
 }
