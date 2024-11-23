@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface ModerationAnswerRepository extends JpaRepository<ModerationAnswerEntity, Long> {
 
-    @Query("SELECT modAnswer FROM ModerationAnswerEntity modAnswer WHERE modAnswer.quiz.id = :quizId LIMIT 1")
+    @Query("SELECT modAnswer FROM ModerationAnswerEntity modAnswer WHERE modAnswer.quiz.id = :quizId")
     Optional<ModerationAnswerEntity> findModerationAnswerByQuestionId(@Param("quizId") Long quizId);
 }
