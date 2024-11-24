@@ -6,6 +6,7 @@ import com.sparkfusion.quiz.brainvoyage.api.entity.user.UserEntity;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserAlreadyExistsException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
+import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConnectionException;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtUtils;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
@@ -90,7 +91,7 @@ public class UserService {
             UserEntity savedUser = userRepository.save(userEntity);
 
             return addUserFactory.mapToDto(savedUser);
-        } catch (UserAlreadyExistsException | NotImageException | UnexpectedException exception) {
+        } catch (UserAlreadyExistsException | NotImageException | FailedStorageConnectionException | UnexpectedException exception) {
             throw exception;
         } catch (Exception e) {
             System.out.println(e.getMessage());

@@ -8,6 +8,7 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.QuizCatalogNotFoundExcepti
 import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
+import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConnectionException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizCatalogRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
@@ -124,7 +125,7 @@ public class QuizService {
             QuizEntity quiz = addQuizFactory.mapToEntity(addQuizDto, existingUser.get(), existingCatalog.get(), imageUrl);
             QuizEntity savedQuiz = quizRepository.save(quiz);
             return getQuizFactory.mapToDto(savedQuiz);
-        } catch (UserNotFoundException | QuizCatalogNotFoundException e) {
+        } catch (UserNotFoundException | QuizCatalogNotFoundException | FailedStorageConnectionException | UnexpectedException e) {
             throw e;
         } catch (Exception exception) {
             throw new UnexpectedException("Error adding quiz");

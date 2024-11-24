@@ -1,6 +1,7 @@
 package com.sparkfusion.quiz.brainvoyage.api.exception_handler;
 
 import com.sparkfusion.quiz.brainvoyage.api.exception.*;
+import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConnectionException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,6 +18,13 @@ import java.util.Map;
 
 @RestControllerAdvice
 public final class GlobalExceptionHandler {
+
+    @ExceptionHandler(FailedStorageConnectionException.class)
+    @ResponseBody
+    public ResponseEntity<ErrorResponse> handleFailedStorageConnectionException(FailedStorageConnectionException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage(), HttpStatus.BAD_GATEWAY.value());
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
     @ExceptionHandler(DataParsingException.class)
     @ResponseBody

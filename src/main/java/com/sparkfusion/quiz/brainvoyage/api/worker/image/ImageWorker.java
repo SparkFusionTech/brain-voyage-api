@@ -1,41 +1,79 @@
 package com.sparkfusion.quiz.brainvoyage.api.worker.image;
 
+import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConnectionException;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.rmi.UnexpectedException;
 import java.util.UUID;
 
 @Component
 public final class ImageWorker {
 
-    private final String serverUrl;
+    private final String supabaseUrl;
+    private final String supabaseKey;
+    private final String bucketName;
 
     private final ImageDirectoryProvider directoryProvider;
 
-    public ImageWorker(@Value("${SERVER_URL}") String serverUrl) {
-        this.serverUrl = serverUrl;
+    public ImageWorker(
+            @Value("${S3_ENDPOINT_URL}") String supabaseUrl,
+            @Value("${S3_ACCESS_KEY}") String supabaseKey,
+            @Value("${S3_BUCKET_NAME}") String bucketName
+    ) {
+        this.supabaseUrl = supabaseUrl;
+        this.supabaseKey = supabaseKey;
+        this.bucketName = bucketName;
         this.directoryProvider = new ImageDirectoryProvider(ImageUtils.UPLOAD_DIRECTORY);
     }
 
     public String getEmptyAccountIconUrl() {
-        return serverUrl + ImageUtils.IMAGES_DIRECTORY + "/" + ImageUtils.EMPTY_ACCOUNT_ICON_NAME;
+        return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + ImageUtils.EMPTY_ACCOUNT_ICON_NAME;
     }
 
-    public String saveImage(MultipartFile image, ImageType imageType) throws IOException {
-        directoryProvider.ensureDirectoryExists(imageType);
-        String directoryPath = directoryProvider.getDirectoryPath(imageType);
+    public String saveImage(
+            MultipartFile image, ImageWorker.ImageType imageType
+    ) throws FailedStorageConnectionException, UnexpectedException {
         String fileName = UUID.randomUUID() + ".png";
-        File file = new File(directoryPath, fileName);
+        String directoryName = directoryProvider.getDirectoryPath(imageType);
 
-        try (FileOutputStream outputStream = new FileOutputStream(file)) {
-            outputStream.write(image.getBytes());
+        uploadImageToSupabase(image, bucketName, directoryName + "/" + fileName);
+        return supabaseUrl + "/storage/v1/object/public/" + bucketName + "/" + directoryName + "/" + fileName;
+    }
+
+    private void uploadImageToSupabase(
+            MultipartFile image, String bucketName, String filePath
+    ) throws FailedStorageConnectionException, UnexpectedException {
+        String apiUrl = supabaseUrl + "/storage/v1/object/" + bucketName + "/" + filePath;
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPost post = new HttpPost(apiUrl);
+            post.setHeader("Authorization", "Bearer " + supabaseKey);
+            post.setHeader("Content-Type", image.getContentType());
+
+            try (InputStream inputStream = image.getInputStream()) {
+                post.setEntity(new InputStreamEntity(inputStream, image.getSize()));
+                HttpResponse response = httpClient.execute(post);
+                String responseString = EntityUtils.toString(response.getEntity());
+
+                if (response.getStatusLine().getStatusCode() != 200) {
+                    throw new IOException("Failed to upload file: " + responseString);
+                }
+            }
+        } catch (IOException e) {
+            throw new FailedStorageConnectionException();
+        } catch (Exception e) {
+            throw new UnexpectedException("Unexpected storage exception", e);
         }
-
-        return serverUrl + directoryPath + "/" + fileName;
     }
 
     public enum ImageType {

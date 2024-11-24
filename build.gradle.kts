@@ -20,6 +20,8 @@ repositories {
 
 dependencies {
 
+    implementation("org.apache.httpcomponents:httpclient:4.5.13")
+
     implementation("software.amazon.awssdk:s3:2.29.0")
 
     implementation("org.postgresql:postgresql:42.7.4")

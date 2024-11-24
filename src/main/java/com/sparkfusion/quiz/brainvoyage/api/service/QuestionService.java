@@ -9,6 +9,7 @@ import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuestionEntity;
 import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizEntity;
 import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
+import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConnectionException;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuestionRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
 import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
@@ -75,7 +76,7 @@ public class QuestionService {
                 answerService.addAnswer(addAnswerDto, question.getId());
             }
             return getQuestionFactory.mapToDto(question);
-        } catch (QuizNotFoundException e) {
+        } catch (QuizNotFoundException | FailedStorageConnectionException | UnexpectedException e) {
             throw e;
         } catch (Exception exception) {
             throw new UnexpectedException();
