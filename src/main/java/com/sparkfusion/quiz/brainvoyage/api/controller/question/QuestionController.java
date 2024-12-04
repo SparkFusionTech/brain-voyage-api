@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.controller.question;
 
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.AddQuestionDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.question.GetQuestionDto;
+import com.sparkfusion.quiz.brainvoyage.api.dto.question.GetQuestionWithAnswerDto;
 import com.sparkfusion.quiz.brainvoyage.api.service.QuestionService;
 import com.sparkfusion.quiz.brainvoyage.api.worker.parser.JsonParser;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,6 +57,15 @@ public class QuestionController {
             @RequestParam("quizId") Long quizId
     ) {
         List<GetQuestionDto> questions = questionService.readQuestionsByQuizId(quizId);
+        return new ResponseEntity<>(questions, HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/play")
+    public ResponseEntity<List<GetQuestionWithAnswerDto>> readQuestionsWithAnswersByQuizId(
+            @RequestParam("quizId") Long quizId
+    ) {
+        List<GetQuestionWithAnswerDto> questions = questionService.readQuestionsWithAnswersByQuizId(quizId);
         return new ResponseEntity<>(questions, HttpStatus.OK);
     }
 
