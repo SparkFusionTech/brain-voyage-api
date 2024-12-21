@@ -10,6 +10,7 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.storage.FailedStorageConne
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtResponse;
 import com.sparkfusion.quiz.brainvoyage.api.jwt.JwtUtils;
 import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
+import com.sparkfusion.quiz.brainvoyage.api.service.catalog_progress.CatalogExperienceService;
 import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
 import com.sparkfusion.quiz.brainvoyage.api.worker.image.error.NotImageException;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CatalogExperienceService catalogExperienceService;
 
     private final GetUserFactory getUserFactory;
     private final AddUserFactory addUserFactory;
@@ -35,6 +37,7 @@ public class UserService {
 
     public UserService(
             UserRepository userRepository,
+            CatalogExperienceService catalogExperienceService,
             GetUserFactory getUserFactory,
             AddUserFactory addUserFactory,
             GetUserInfoFactory getUserInfoFactory,
@@ -43,6 +46,7 @@ public class UserService {
             ImageWorker imageWorker
     ) {
         this.userRepository = userRepository;
+        this.catalogExperienceService = catalogExperienceService;
         this.getUserFactory = getUserFactory;
         this.addUserFactory = addUserFactory;
         this.getUserInfoFactory = getUserInfoFactory;
@@ -90,8 +94,13 @@ public class UserService {
             );
             UserEntity savedUser = userRepository.save(userEntity);
 
+            try {
+                catalogExperienceService.initCatalogLevel(savedUser);
+            } catch (Exception ignore) {}
+
             return addUserFactory.mapToDto(savedUser);
-        } catch (UserAlreadyExistsException | NotImageException | FailedStorageConnectionException | UnexpectedException exception) {
+        } catch (UserAlreadyExistsException | NotImageException | FailedStorageConnectionException |
+                 UnexpectedException exception) {
             throw exception;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -147,3 +156,21 @@ public class UserService {
                 .toList();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

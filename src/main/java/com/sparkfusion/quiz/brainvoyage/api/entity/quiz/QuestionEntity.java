@@ -12,7 +12,7 @@ public class QuestionEntity {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 32)
+    @Column(name = "name", nullable = false, length = 128)
     private String name;
 
     @Column(name = "image_url", nullable = false)
@@ -24,7 +24,7 @@ public class QuestionEntity {
     @Column(name = "difficulty", nullable = false)
     private Integer difficulty;
 
-    @Column(name = "explanation", length = 256)
+    @Column(name = "explanation", length = 1024)
     private String explanation;
 
     @ManyToOne(fetch = FetchType.LAZY)

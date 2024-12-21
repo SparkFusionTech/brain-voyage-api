@@ -17,10 +17,10 @@ public final class QuizEntity {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "title", nullable = false, length = 64)
+    @Column(name = "title", nullable = false, length = 128)
     private String title;
 
-    @Column(name = "description", nullable = false, length = 256)
+    @Column(name = "description", nullable = false, length = 512)
     private String description;
 
     @Column(name = "type", nullable = false)

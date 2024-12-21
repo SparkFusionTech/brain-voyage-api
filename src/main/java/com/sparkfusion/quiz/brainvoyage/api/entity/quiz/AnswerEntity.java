@@ -12,7 +12,7 @@ public class AnswerEntity {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Column(name = "name", nullable = false, length = 24)
+    @Column(name = "name", nullable = false, length = 64)
     private String name;
 
     @Column(name = "number", nullable = false)
