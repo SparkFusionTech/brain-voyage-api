@@ -13,9 +13,13 @@ import com.sparkfusion.quiz.brainvoyage.api.exception.QuizNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.catalog_xp.CatalogProgressNotFoundException;
-import com.sparkfusion.quiz.brainvoyage.api.repository.*;
+import com.sparkfusion.quiz.brainvoyage.api.repository.QuestionRepository;
+import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
+import com.sparkfusion.quiz.brainvoyage.api.repository.UserRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.catalog_progress.CatalogProgressQuestionRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.catalog_progress.CatalogProgressRepository;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +33,7 @@ public class CatalogProgressQuestionService {
     private final QuizRepository quizRepository;
     private final CatalogProgressRepository catalogProgressRepository;
     private final QuestionRepository questionRepository;
+    private final CatalogExperienceService catalogExperienceService;
 
     private final GetCatalogProgressQuestionFactory getCatalogProgressQuestionFactory;
 
@@ -38,7 +43,8 @@ public class CatalogProgressQuestionService {
             QuizRepository quizRepository,
             CatalogProgressRepository catalogProgressRepository,
             QuestionRepository questionRepository,
-            GetCatalogProgressQuestionFactory getCatalogProgressQuestionFactory
+            GetCatalogProgressQuestionFactory getCatalogProgressQuestionFactory,
+            CatalogExperienceService catalogExperienceService
     ) {
         this.catalogProgressQuestionRepository = catalogProgressQuestionRepository;
         this.userRepository = userRepository;
@@ -46,6 +52,7 @@ public class CatalogProgressQuestionService {
         this.catalogProgressRepository = catalogProgressRepository;
         this.questionRepository = questionRepository;
         this.getCatalogProgressQuestionFactory = getCatalogProgressQuestionFactory;
+        this.catalogExperienceService = catalogExperienceService;
     }
 
     @Transactional
@@ -119,9 +126,19 @@ public class CatalogProgressQuestionService {
                 catalogProgressQuestion.setCatalogProgress(optionalCatalogProgress.get());
                 catalogProgressQuestion.setQuestion(optionalQuestion.get());
 
+                updateCatalogProgressXp(
+                        userEmail,
+                        updateCatalogProgressQuestionDto,
+                        null
+                );
                 catalogProgressQuestionRepository.save(catalogProgressQuestion);
             } else {
                 CatalogProgressQuestion catalogProgressQuestion = optionalCatalogProgressQuestion.get();
+                updateCatalogProgressXp(
+                        userEmail,
+                        updateCatalogProgressQuestionDto,
+                        catalogProgressQuestion
+                );
                 if (!catalogProgressQuestion.getCorrectAnswer()) {
                     catalogProgressQuestion.setXpGained(updateCatalogProgressQuestionDto.getXpGained());
                     catalogProgressQuestion.setCorrectAnswer(updateCatalogProgressQuestionDto.getCorrectAnswer());
@@ -133,10 +150,40 @@ public class CatalogProgressQuestionService {
                  QuestionNotFoundException e) {
             throw e;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new UnexpectedException();
         }
     }
 
+    private void updateCatalogProgressXp(
+            String email,
+            @NotNull UpdateCatalogProgressQuestionDto updateCatalogProgressQuestionDto,
+            @Nullable CatalogProgressQuestion optionalCatalogProgressQuestion
+    ) {
+        if (!updateCatalogProgressQuestionDto.getCorrectAnswer()) {
+            return;
+        }
+
+        if (updateCatalogProgressQuestionDto.getXpGained() <= 0) {
+            return;
+        }
+
+        if (optionalCatalogProgressQuestion == null) {
+            catalogExperienceService.updateCatalogExperience(
+                    email, updateCatalogProgressQuestionDto.getXpGained()
+            );
+            return;
+        }
+
+        if (optionalCatalogProgressQuestion.getCorrectAnswer()) {
+            return;
+        }
+
+        catalogExperienceService.updateCatalogExperience(
+                email,
+                updateCatalogProgressQuestionDto.getXpGained()
+        );
+    }
 }
 
 

@@ -50,7 +50,7 @@ public class CatalogProgressService {
             if (optionalCatalogProgress.isEmpty()) throw new CatalogProgressNotFoundException();
 
             CatalogProgress updatedCatalogProgress = optionalCatalogProgress.get();
-            updatedCatalogProgress.setNextTryAt(LocalDateTime.now());
+            updatedCatalogProgress.setNextTryAt(LocalDateTime.now().plusHours(4L));
             catalogProgressRepository.save(updatedCatalogProgress);
         } catch (UserNotFoundException | QuizNotFoundException | CatalogProgressNotFoundException e) {
             throw e;

@@ -12,8 +12,10 @@ public class GetCatalogExperienceFactory {
         return new GetCatalogExperienceDto(
                 catalogExperience.getId(),
                 catalogExperience.getCurrentXp(),
+                catalogLevel.getXpCount(),
                 catalogLevel.getName(),
-                catalogLevel.getLevel()
+                catalogLevel.getLevel(),
+                catalogLevel.getColor()
         );
     }
 }

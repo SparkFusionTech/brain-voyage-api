@@ -98,11 +98,11 @@ public class CatalogExperienceService {
             if (catalogExperienceOptional.isEmpty()) throw new CatalogExperienceNotFoundException();
 
             CatalogExperience catalogExperience = catalogExperienceOptional.get();
-            Optional<CatalogLevel> nextLevel = catalogLevelRepository.findById(catalogExperience.getId());
+            Optional<CatalogLevel> nextLevel = catalogLevelRepository.findById(catalogExperience.getCatalogLevel().getId() + 1);
             if (nextLevel.isEmpty()) throw new UnexpectedException();
 
-            if (catalogExperience.getCatalogLevel().getXpCount() + addXp >= nextLevel.get().getXpCount()) {
-                catalogExperience.setCurrentXp(catalogExperience.getCurrentXp() + addXp - nextLevel.get().getXpCount());
+            if (catalogExperience.getCurrentXp() + addXp >= catalogExperience.getCatalogLevel().getXpCount()) {
+                catalogExperience.setCurrentXp(catalogExperience.getCurrentXp() + addXp - catalogExperience.getCatalogLevel().getXpCount());
                 catalogExperience.setCatalogLevel(nextLevel.get());
             } else {
                 catalogExperience.setCurrentXp(catalogExperience.getCurrentXp() + addXp);

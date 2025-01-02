@@ -4,14 +4,34 @@ public class GetCatalogExperienceDto {
 
     private Long id;
     private Integer currentXp;
+    private Integer levelXp;
     private String name;
     private Integer level;
+    private String color;
 
-    public GetCatalogExperienceDto(Long id, Integer currentXp, String name, Integer level) {
+    public GetCatalogExperienceDto(Long id, Integer currentXp, Integer levelXp, String name, Integer level, String color) {
         this.id = id;
         this.currentXp = currentXp;
+        this.levelXp = levelXp;
         this.name = name;
         this.level = level;
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public Integer getLevelXp() {
+        return levelXp;
+    }
+
+    public void setLevelXp(Integer levelXp) {
+        this.levelXp = levelXp;
     }
 
     public String getName() {
