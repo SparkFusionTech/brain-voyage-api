@@ -3,6 +3,7 @@ package com.sparkfusion.quiz.brainvoyage.api.service;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.*;
 import com.sparkfusion.quiz.brainvoyage.api.encryptor.PasswordEncryptor;
 import com.sparkfusion.quiz.brainvoyage.api.entity.user.UserEntity;
+import com.sparkfusion.quiz.brainvoyage.api.exception.InequalityPasswordsException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UnexpectedException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserAlreadyExistsException;
 import com.sparkfusion.quiz.brainvoyage.api.exception.UserNotFoundException;
@@ -53,6 +54,57 @@ public class UserService {
         this.passwordEncryptor = passwordEncryptor;
         this.jwtUtils = jwtUtils;
         this.imageWorker = imageWorker;
+    }
+
+    @Transactional
+    public void deleteAccount(String email, String password) {
+        try {
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) throw new UserNotFoundException();
+
+            if (!passwordEncryptor.matches(password, optionalUser.get().getPassword())) {
+                throw new InequalityPasswordsException();
+            }
+
+            userRepository.delete(optionalUser.get());
+        } catch (UserNotFoundException | InequalityPasswordsException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public GetUserDto readUser(String email) {
+        try {
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) throw new UserNotFoundException();
+
+            UserEntity user = optionalUser.get();
+            return getUserFactory.mapToDto(user);
+        } catch (UserNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional
+    public GetUserDto updatePassword(String email, String newPassword) {
+        try {
+            Optional<UserEntity> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isEmpty()) throw new UserNotFoundException();
+
+            UserEntity user = optionalUser.get();
+            user.setPassword(newPassword);
+
+            UserEntity newUser = userRepository.save(user);
+            return getUserFactory.mapToDto(newUser);
+        } catch (UserNotFoundException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
     }
 
     @Transactional(readOnly = true)

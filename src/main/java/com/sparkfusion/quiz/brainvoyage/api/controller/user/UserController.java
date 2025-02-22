@@ -1,5 +1,6 @@
 package com.sparkfusion.quiz.brainvoyage.api.controller.user;
 
+import com.sparkfusion.quiz.brainvoyage.api.dto.correct_answer.CorrectAnswer;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.AddUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserDto;
 import com.sparkfusion.quiz.brainvoyage.api.dto.user.GetUserInfoDto;
@@ -35,6 +36,39 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @DeleteMapping
+    public ResponseEntity<CorrectAnswer> deleteAccount(
+            @Valid
+            @NotBlank(message = "Password must not be blank")
+            @RequestParam("password")
+            String password
+    ) {
+        return new ResponseEntity<>(CorrectAnswer.createSuccessAnswer(), HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @GetMapping("/password")
+    public ResponseEntity<GetUserDto> readUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        GetUserDto getUserDto = userService.readUser(email);
+        return new ResponseEntity<>(getUserDto, HttpStatus.OK);
+    }
+
+    @SecurityRequirement(name = "Bearer Authentication")
+    @PostMapping("/password")
+    public ResponseEntity<GetUserDto> changePassword(
+            @Valid
+            @NotBlank(message = "Password must not be blank")
+            @Size(min = 8, message = "Password must be at least 8 characters long")
+            @RequestParam("password")
+            String password
+    ) {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        GetUserDto getUserDto = userService.updatePassword(email, password);
+        return new ResponseEntity<>(getUserDto, HttpStatus.OK);
     }
 
     @Operation(

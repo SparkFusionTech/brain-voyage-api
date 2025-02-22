@@ -3,7 +3,9 @@ package com.sparkfusion.quiz.brainvoyage.api.worker.parser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparkfusion.quiz.brainvoyage.api.exception.DataParsingException;
+import org.springframework.stereotype.Component;
 
+@Component
 public class JsonParser {
 
     public <T> T parseJsonToDto(String jsonDto, Class<T> clazz) {
@@ -15,5 +17,22 @@ public class JsonParser {
             throw new DataParsingException();
         }
     }
-
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

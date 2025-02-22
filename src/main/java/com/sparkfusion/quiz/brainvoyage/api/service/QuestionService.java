@@ -12,6 +12,7 @@ import com.sparkfusion.quiz.brainvoyage.api.repository.AnswerRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuestionRepository;
 import com.sparkfusion.quiz.brainvoyage.api.repository.QuizRepository;
 import com.sparkfusion.quiz.brainvoyage.api.worker.image.ImageWorker;
+import jakarta.annotation.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,6 +62,30 @@ public class QuestionService {
             List<QuestionEntity> questions = questionRepository.readQuestionByQuizId(quizId);
             List<GetQuestionWithAnswerDto> questionsWithAnswers = new ArrayList<>(questions.size());
 
+            for (QuestionEntity question : questions) {
+                List<AnswerEntity> answers = answerRepository.readAnswersByQuestionId(question.getId());
+                questionsWithAnswers.add(getQuestionWithAnswerFactory.mapToDto(question, answers));
+            }
+
+            return questionsWithAnswers;
+        } catch (Exception e) {
+            throw new UnexpectedException();
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public List<GetQuestionWithAnswerDto> readQuestionsWithAnswersForOnlineGameByCategoryId(
+            @Nullable Long catalogId
+    ) {
+        try {
+            List<QuestionEntity> questions;
+            if (catalogId == null) {
+                questions = questionRepository.findRandomQuestions();
+            } else {
+                questions = questionRepository.findRandomQuestions(catalogId);
+            }
+
+            List<GetQuestionWithAnswerDto> questionsWithAnswers = new ArrayList<>(questions.size());
             for (QuestionEntity question : questions) {
                 List<AnswerEntity> answers = answerRepository.readAnswersByQuestionId(question.getId());
                 questionsWithAnswers.add(getQuestionWithAnswerFactory.mapToDto(question, answers));

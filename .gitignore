@@ -6,6 +6,7 @@ Dockerfile
 # Local configuration file (sdk path, etc)
 local.properties
 start.bat
+build.bat
 
 # Log/OS Files
 *.log
