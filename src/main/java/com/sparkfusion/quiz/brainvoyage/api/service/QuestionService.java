@@ -81,18 +81,23 @@ public class QuestionService {
             List<QuestionEntity> questions;
             if (catalogId == null) {
                 questions = questionRepository.findRandomQuestions();
+                System.out.println(questions.toString());
             } else {
                 questions = questionRepository.findRandomQuestions(catalogId);
+                System.out.println(questions.toString());
             }
 
+            System.out.println("READ FINISHED");
             List<GetQuestionWithAnswerDto> questionsWithAnswers = new ArrayList<>(questions.size());
             for (QuestionEntity question : questions) {
+                System.out.println(question.toString());
                 List<AnswerEntity> answers = answerRepository.readAnswersByQuestionId(question.getId());
                 questionsWithAnswers.add(getQuestionWithAnswerFactory.mapToDto(question, answers));
             }
 
             return questionsWithAnswers;
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             throw new UnexpectedException();
         }
     }

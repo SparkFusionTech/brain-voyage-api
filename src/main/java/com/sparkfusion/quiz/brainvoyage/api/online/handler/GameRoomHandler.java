@@ -49,6 +49,7 @@ public class GameRoomHandler {
             WebSocketSession session,
             JoinRoomUserInfo joinRoomUserInfo
     ) {
+        System.out.println(joinRoomUserInfo.toString());
         GetUserDto user;
         try {
             user = userService.readUser(joinRoomUserInfo.getEmail());
@@ -64,6 +65,7 @@ public class GameRoomHandler {
 
         for (Map.Entry<String, GameRoom> entries : rooms.entrySet()) {
             GameRoom room = entries.getValue();
+            System.out.println(room.toString());
             if (room.hasPlayer(session, user.getId())) {
                 gameMessageSender.sendResponse(session, Responses.PLAYER_IN_GAME, new RoomIdModel(entries.getKey()));
                 return;
@@ -72,7 +74,8 @@ public class GameRoomHandler {
 
         for (Map.Entry<String, GameRoom> entries : rooms.entrySet()) {
             GameRoom room = entries.getValue();
-            if (room.needAPlayer()) {
+            if (room.needAPlayer() && room.equalsCatalog(joinRoomUserInfo.getCatalogId())) {
+                System.out.println("NEED A PLAYER");
                 Boolean result = room.connectNewPlayer(player);
                 if (result) {
                     Player secondPlayer = room.getSecondPlayer(player.getSession());
@@ -156,7 +159,7 @@ public class GameRoomHandler {
             if (!room.hasPlayer(session)) continue;
 
             Player currentPlayer = room.getPlayerBySession(session);
-            if (Objects.requireNonNull(currentPlayer).getAnswered()) return;
+            if (currentPlayer == null || Objects.requireNonNull(currentPlayer).getAnswered()) return;
             room.setAnsweredValue(session);
 
             Player secondPlayer = room.getSecondPlayer(session);
@@ -182,19 +185,24 @@ public class GameRoomHandler {
             GameRoom room = entries.getValue();
             if (!room.hasPlayer(session)) continue;
 
+            System.out.println(0);
             Player currentPlayer = room.getPlayerBySession(session);
-            if (Objects.requireNonNull(currentPlayer).getAnswered()) return;
+            System.out.println(currentPlayer);
+            if (currentPlayer == null || Objects.requireNonNull(currentPlayer).getClickNext()) return;
             room.setNextClicked(session);
 
+            System.out.println(1);
             Player secondPlayer = room.getSecondPlayer(session);
             if (Objects.requireNonNull(secondPlayer).getClickNext()) {
                 if (resultTimeoutFuture != null && !resultTimeoutFuture.isDone()) {
                     resultTimeoutFuture.cancel(false);
                 }
 
+                System.out.println("HERE");
                 handleResultTimeout(room, rooms);
             }
 
+            System.out.println(2);
             break;
         }
     }
@@ -206,6 +214,7 @@ public class GameRoomHandler {
                 room.setGameQuestions(questions);
                 return questions.get(0);
             } catch (UnexpectedException e) {
+                System.out.println(e.getMessage());
                 return null;
             }
         }).thenAccept(firstQuestion -> {

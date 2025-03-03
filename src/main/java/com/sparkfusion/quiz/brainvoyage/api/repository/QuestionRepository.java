@@ -16,18 +16,20 @@ public interface QuestionRepository extends JpaRepository<QuestionEntity, Long> 
     List<QuestionEntity> findRandomQuestions();
 
     @Query(value = """
-                SELECT q\s
-                FROM QuestionEntity q\s
-                WHERE q.quiz.id IN (
-                    SELECT qc.id\s
-                    FROM QuizEntity quiz\s
-                    JOIN quiz.catalog qcat\s
-                    WHERE qcat.id = :catalogId\s
-                )\s
-                ORDER BY RANDOM()\s
+                SELECT q.*
+                FROM questions q
+                WHERE q.quiz_id IN (
+                    SELECT quiz.id
+                    FROM quizzes quiz
+                    JOIN quiz_catalog qcat ON quiz.catalog_id = qcat.id
+                    WHERE qcat.id = :catalogId
+                )
+                ORDER BY RANDOM()
                 LIMIT 2
             """, nativeQuery = true)
     List<QuestionEntity> findRandomQuestions(@Param("catalogId") Long catalogId);
+
+
 }
 
 

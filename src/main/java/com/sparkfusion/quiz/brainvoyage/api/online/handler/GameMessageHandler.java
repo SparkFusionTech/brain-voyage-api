@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.online.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparkfusion.quiz.brainvoyage.api.online.command.Command;
+import com.sparkfusion.quiz.brainvoyage.api.online.command.Events;
 import com.sparkfusion.quiz.brainvoyage.api.online.command.Responses;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -36,13 +37,17 @@ public class GameMessageHandler extends TextWebSocketHandler {
             Command command = objectMapper.readValue(message.getPayload(), Command.class);
             commandHandler.handleCommand(session, command);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
             gameMessageSender.sendResponse(session, Responses.UNEXPECTED, null);
         }
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, @NotNull CloseStatus status) {
-        System.out.println("Connection closed: " + session.getId());
+        Command command = new Command();
+        command.setAction(Events.DISCONNECT.getName());
+        commandHandler.handleCommand(session, command);
+        System.out.println("Status: " + status.getCode() + " Reason: " + status.getReason() + " Connection closed: " + session.getId());
     }
 }
 

@@ -92,6 +92,20 @@ public class Player implements Serializable {
     public void setClickNext(Boolean clickNext) {
         this.clickNext = clickNext;
     }
+
+    @Override
+    public String toString() {
+        return "Player{" +
+                "session=" + session +
+                ", id=" + id +
+                ", name='" + name + '\'' +
+                ", iconUrl='" + iconUrl + '\'' +
+                ", connected=" + connected +
+                ", score=" + score +
+                ", answered=" + answered +
+                ", clickNext=" + clickNext +
+                '}';
+    }
 }
 
 

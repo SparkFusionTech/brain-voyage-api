@@ -22,6 +22,7 @@ public class GameMessageSender {
             Response<T> generatedResponse = new Response<>(response.getCode(), response.getMessage(), data);
             String jsonResponse = objectMapper.writeValueAsString(generatedResponse);
 
+            System.out.println(jsonResponse);
             session.sendMessage(new TextMessage(jsonResponse));
         } catch (Exception e) {
             System.out.println("Error sending response: " + e.getMessage());

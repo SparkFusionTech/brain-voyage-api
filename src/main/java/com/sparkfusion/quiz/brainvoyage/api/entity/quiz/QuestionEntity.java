@@ -82,4 +82,17 @@ public class QuestionEntity {
     public void setQuiz(QuizEntity quiz) {
         this.quiz = quiz;
     }
+
+    @Override
+    public String toString() {
+        return "QuestionEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", category=" + category +
+                ", difficulty=" + difficulty +
+                ", explanation='" + explanation + '\'' +
+                ", quiz=" + quiz +
+                '}';
+    }
 }

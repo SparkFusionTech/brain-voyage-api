@@ -34,6 +34,14 @@ public class GameRoom {
         this.catalogId = catalogId;
     }
 
+    public boolean equalsCatalog(@Nullable Long catalogId) {
+        if ((this.catalogId == null && catalogId == null)) return true;
+        if (this.catalogId == null) return false;
+        if (catalogId == null) return true;
+
+        return this.catalogId.equals(catalogId);
+    }
+
     public void setNextClicked(@NotNull WebSocketSession session) {
         Player player = getPlayerBySession(session);
         if (player != null) {
@@ -50,7 +58,7 @@ public class GameRoom {
     public GetQuestionWithAnswerDto getNextQuestion() {
         if (currentQuestionId == answers.size() - 1) return null;
         currentQuestionId++;
-        return answers.get(currentQuestionId - 1);
+        return answers.get(currentQuestionId);
     }
 
     public void clearAnsweredValues() {
@@ -114,6 +122,9 @@ public class GameRoom {
         if (player2 == null && player1.getSession().equals(session)) {
             return player1;
         }
+
+        if (player1.getSession().equals(session)) return player1;
+        if (player2.getSession().equals(session)) return player2;
 
         return null;
     }
