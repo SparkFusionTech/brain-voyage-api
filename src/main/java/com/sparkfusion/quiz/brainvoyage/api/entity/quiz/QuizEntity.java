@@ -118,4 +118,20 @@ public final class QuizEntity {
     public void setCatalog(QuizCatalogEntity catalog) {
         this.catalog = catalog;
     }
+
+    @Override
+    public String toString() {
+        return "QuizEntity{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", type=" + type +
+                ", questions=" + questions +
+                ", imageUrl='" + imageUrl + '\'' +
+                ", rating=" + rating +
+                ", createdAt=" + createdAt +
+                ", user=" + user +
+                ", catalog=" + catalog +
+                '}';
+    }
 }

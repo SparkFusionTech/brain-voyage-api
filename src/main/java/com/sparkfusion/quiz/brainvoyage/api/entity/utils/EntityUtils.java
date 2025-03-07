@@ -9,4 +9,5 @@ public final class EntityUtils {
     public static final String QUESTION_TABLE = "questions";
     public static final String ANSWER_TABLE = "answers";
     public static final String MODERATION_ANSWER_TABLE = "moderation_answer";
+    public static final String QUIZ_RATING_TABLE = "quiz_rating";
 }
