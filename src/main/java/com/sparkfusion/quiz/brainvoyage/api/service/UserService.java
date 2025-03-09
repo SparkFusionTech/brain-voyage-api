@@ -96,7 +96,7 @@ public class UserService {
             if (optionalUser.isEmpty()) throw new UserNotFoundException();
 
             UserEntity user = optionalUser.get();
-            user.setPassword(newPassword);
+            user.setPassword(passwordEncryptor.encrypt(newPassword));
 
             UserEntity newUser = userRepository.save(user);
             return getUserFactory.mapToDto(newUser);
