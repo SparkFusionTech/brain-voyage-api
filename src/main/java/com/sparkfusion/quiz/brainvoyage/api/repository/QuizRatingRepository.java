@@ -2,6 +2,7 @@ package com.sparkfusion.quiz.brainvoyage.api.repository;
 
 import com.sparkfusion.quiz.brainvoyage.api.entity.quiz.QuizRatingEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -19,6 +20,10 @@ public interface QuizRatingRepository extends JpaRepository<QuizRatingEntity, Lo
 
     @Query("SELECT AVG(q.rating) FROM QuizRatingEntity q WHERE q.quiz.id = :quizId")
     Double findAverageRatingByQuizId(@Param("quizId") Long quizId);
+
+    @Modifying
+    @Query("UPDATE QuizRatingEntity q SET q.rating = :rating WHERE q.user.id = :userId AND q.quiz.id = :quizId")
+    void updateRatingByUserIdAndQuizId(Long userId, Long quizId, Integer rating);
 }
 
 

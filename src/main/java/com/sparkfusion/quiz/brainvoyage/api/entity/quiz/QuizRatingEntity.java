@@ -5,7 +5,10 @@ import com.sparkfusion.quiz.brainvoyage.api.entity.utils.EntityUtils;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = EntityUtils.QUIZ_RATING_TABLE)
+@Table(
+        name = EntityUtils.QUIZ_RATING_TABLE,
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "quiz_id"})
+)
 public class QuizRatingEntity {
 
     @Id

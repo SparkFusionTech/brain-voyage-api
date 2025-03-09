@@ -45,7 +45,7 @@ public class QuizRatingService {
             if (optionalUserEntity.isEmpty()) throw new UserNotFoundException();
 
             Long userId = optionalUserEntity.get().getId();
-            Optional<QuizRatingEntity> optionalQuizRatingEntity = quizRatingRepository.findQuizRatingByUserId(quizId, userId);
+            Optional<QuizRatingEntity> optionalQuizRatingEntity = quizRatingRepository.findQuizRatingByUserId(userId, quizId);
             if (optionalQuizRatingEntity.isEmpty()) {
                 Optional<QuizEntity> optionalQuizEntity = quizRepository.findById(quizId);
                 if (optionalQuizEntity.isEmpty()) throw new QuizNotFoundException();
@@ -58,9 +58,7 @@ public class QuizRatingService {
                 );
                 quizRatingRepository.save(quizRatingEntity);
             } else {
-                QuizRatingEntity quizRatingEntity = optionalQuizRatingEntity.get();
-                quizRatingEntity.setRating(rating);
-                quizRatingRepository.save(quizRatingEntity);
+                quizRatingRepository.updateRatingByUserIdAndQuizId(userId, quizId, rating);
             }
         } catch (UserNotFoundException | QuizNotFoundException e) {
             throw e;
