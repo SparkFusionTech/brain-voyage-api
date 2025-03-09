@@ -17,10 +17,10 @@ public interface QuizRepository extends JpaRepository<QuizEntity, Long> {
     @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.user.id = :userId AND quiz.id = :quizId")
     Optional<QuizEntity> findQuizByUserIdAndQuizId(@Param("userId") Long userId, @Param("quizId") Long quizId);
 
-    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.catalog.id = :catalogId AND quiz.type = 2")
+    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.catalog.id = :catalogId AND quiz.type = 2 ORDER BY quiz.createdAt DESC")
     List<QuizEntity> findAllByType(@Param("catalogId") Long catalogId);
 
-    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.user.email = :userEmail ORDER BY quiz.createdAt")
+    @Query("SELECT quiz FROM QuizEntity quiz WHERE quiz.user.email = :userEmail ORDER BY quiz.createdAt DESC")
     List<QuizEntity> findAllByUserEmail(@Param("userEmail") String userEmail);
 
     @Modifying
